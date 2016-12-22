@@ -1,6 +1,7 @@
 package com.sf.wxc.beans;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,6 +11,7 @@ import javax.persistence.Table;
  * Created by Su Feng on 2016/12/22.
  */
 @Data
+@ToString
 @Entity
 @Table(name = "feed")
 public class FeedArticle {
