@@ -24,5 +24,10 @@ public class Feed {
     private String contentJhql;
     private String parserClass;
     private String entityClass;
+    private Boolean contentPageRedirect;
+    private String contentPagePreUrl;
+    private Boolean listPageMobile;
+    private Boolean contentPageMobile;
     private int frequency;
+    private String tags;
 }
