@@ -86,17 +86,21 @@ public class BigDataWay {
                 "  }");
         root.put("_links",links);
 
+        JSONArray titleArr = new JSONArray();
         JSONObject title = new JSONObject();
         title.put("value",article.getTitle());
         title.put("lang","zh-hans");
-        root.put("title",title);
+        titleArr.put(title);
+        root.put("title",titleArr);
 
+        JSONArray bodyArr = new JSONArray();
         JSONObject body = new JSONObject();
         body.put("value",article.getContent());
         body.put("summary",article.getDescription()==null?"":article.getDescription());
         body.put("lang","zh-hans");
         body.put("format","full_html");
-        root.put("body",body);
+        bodyArr.put(body);
+        root.put("body",bodyArr);
 
         JSONObject _embedded = new JSONObject();
         JSONArray tags = new JSONArray();
