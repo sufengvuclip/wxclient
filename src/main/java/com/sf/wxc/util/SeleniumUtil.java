@@ -18,9 +18,4 @@ public class SeleniumUtil {
 //        driver.close();
         return ret;
     }
-
-    public static void main(String[] args) {
-        System.out.println(getRequest("http://m.toutiao.com/group/6367127273606660354/"));
-        //System.out.println(getRequest("http://m.toutiao.com/group/6367186916920721666/"));
-    }
 }

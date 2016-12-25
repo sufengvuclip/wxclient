@@ -2,6 +2,7 @@ package com.sf.wxc.beans;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 @Data
 @AllArgsConstructor
 @Entity
+@ToString
 @Table(name = "feed")
 public class Feed {
     @Id
@@ -30,4 +32,8 @@ public class Feed {
     private Boolean contentPageMobile;
     private int frequency;
     private String tags;
+    private String category;
+
+    public Feed() {
+    }
 }

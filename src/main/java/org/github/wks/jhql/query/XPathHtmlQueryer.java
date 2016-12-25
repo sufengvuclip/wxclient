@@ -16,6 +16,7 @@
  */
 package org.github.wks.jhql.query;
 
+import com.sf.wxc.util.HtmlUtil;
 import org.github.wks.jhql.query.annotation.Required;
 import org.jaxen.JaxenException;
 import org.jaxen.dom.DOMXPath;
@@ -24,8 +25,8 @@ import org.w3c.dom.Node;
 import java.util.List;
 import java.util.Map;
 
-public abstract class XPathQueryer<T> extends ScalarQueryer<T> {
-	protected DOMXPath xPath;
+public abstract class XPathHtmlQueryer<T> extends ScalarQueryer<T> {
+	private DOMXPath xPath;
 
 	@Required
 	public void setValue(String xPathExpression)
@@ -45,7 +46,8 @@ public abstract class XPathQueryer<T> extends ScalarQueryer<T> {
 			List<Node> results = xPath.selectNodes(node);
 			StringBuilder sb = new StringBuilder();
 			for (Node n : results) {
-				sb.append(n.getTextContent()).append(" ");
+//				System.out.println(n.getTextContent());
+				sb.append(HtmlUtil.getInnerHTML(n));
 			}
 
 			return sb.toString();

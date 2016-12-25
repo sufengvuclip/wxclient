@@ -74,7 +74,7 @@ public class WxclientApplicationTests {
 				"        \"content\": \"text:.//div[@class='article-content']\""+
 				"}";
 		Feed feed = new Feed(0,"test","http://m.toutiao.com/search/?keyword=tensorflow&count=10",
-		"toutiao.com",listHql,contentHql,"com.sf.wxc.parser.ArticleFeedParser","entityclass",true,"http://www.toutiao.com",true,false,1,"tensorflow");
+		"toutiao.com",listHql,contentHql,"com.sf.wxc.parser.ArticleFeedParser","entityclass",true,"http://www.toutiao.com",true,false,1,"tensorflow","");
 		Class clazz = Class.forName(feed.getParserClass());
 		BaseParser parser = (BaseParser) clazz.newInstance();
 //		String doc = HttpClientUtil.httpGetRequest(feed.getUrl());

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sf.wxc.beans.Feed;
 import com.sf.wxc.beans.FeedArticle;
+import com.sf.wxc.repository.db.feeddb.FeedArticleDbRepository;
 import com.sf.wxc.util.HttpClientUtil;
+import com.sf.wxc.util.SpringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 
@@ -18,14 +20,13 @@ import java.util.List;
 public class ArticleFeedParser extends JHQLParser implements BaseParser{
     static ObjectMapper objectMapper = new ObjectMapper();
     static JavaType javaType = objectMapper.getTypeFactory().constructParametricType(List.class, FeedArticle.class);
+    FeedArticleDbRepository feedArticleDbRepository = SpringUtil.getBean(FeedArticleDbRepository.class);
     @Override
     public List<FeedArticle> parseListPage(Feed feed) {
         List<FeedArticle> ret = null;
 
         String doc = HttpClientUtil.httpGetRequest(feed.getUrl(),feed.getListPageMobile());
         Object obj = parse(doc, feed.getListJhql());
-        System.out.println(obj.getClass().getName());
-        System.out.println(obj.toString());
 
         LinkedHashMap<String, List> map = (LinkedHashMap) obj;
         List list = map.get("articles");
@@ -33,8 +34,14 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser{
         try {
             ret =  (List<FeedArticle>)objectMapper.readValue(arry.toString(), javaType);
             if(ret!=null && ret.size()>0){
-                for(FeedArticle article: ret){
-                    parseContentPage(feed, article);
+                for(int i=ret.size()-1;i>=0;i--){
+                    FeedArticle article = ret.get(i);
+                    article.transferUrl(feed);
+
+                    if(article.validateUrlTitle() && !feedArticleDbRepository.existsUrl(article.getUrl()))
+                        parseContentPage(feed, article);
+                    else
+                        ret.remove(i);
                 }
             }
         } catch (IOException e) {
@@ -45,21 +52,25 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser{
 
     @Override
     public FeedArticle parseContentPage(Feed feed, Object article) {
-        if(StringUtils.trimToNull(feed.getContentPagePreUrl())!=null){
+        if(StringUtils.trimToNull(feed.getContentPagePreUrl())!=null && !StringUtils.trimToEmpty(((FeedArticle) article).getUrl()).startsWith("http")){
             String articleUrl = feed.getContentPagePreUrl()+((FeedArticle) article).getUrl();
             ((FeedArticle) article).setUrl(articleUrl);
         }
         String contentUrl = ((FeedArticle) article).getUrl();
         if(feed.getContentPageRedirect()){
-            System.out.println(contentUrl);
             contentUrl = HttpClientUtil.httpGetRedirectFinalUrl(contentUrl, feed.getContentPageMobile());
-            System.out.println(feed.getContentPageMobile()+contentUrl);
         }
 
         String doc = HttpClientUtil.httpGetRequest(contentUrl, feed.getContentPageMobile());
         Object obj = parse(doc, feed.getContentJhql());
         LinkedHashMap<String, Object> map = (LinkedHashMap) obj;
+        ((FeedArticle) article).setDomain(feed.getDomain());
+        ((FeedArticle) article).setFeedId(feed.getId());
+        ((FeedArticle) article).setCategory(feed.getCategory());
         ((FeedArticle) article).setContent(map.get("content").toString());
-        return null;
+        ((FeedArticle) article).setAuthor(map.get("author").toString());
+        ((FeedArticle) article).setTags(map.get("tags").toString());
+
+        return (FeedArticle) article;
     }
 }

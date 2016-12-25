@@ -16,6 +16,10 @@
  */
 package org.github.wks.jhql.factory;
 
+import org.codehaus.jackson.map.ObjectMapper;
+import org.github.wks.jhql.query.*;
+import org.github.wks.jhql.query.annotation.Required;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -28,19 +32,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.github.wks.jhql.query.ContextQueryer;
-import org.github.wks.jhql.query.DateQueryer;
-import org.github.wks.jhql.query.IntQueryer;
-import org.github.wks.jhql.query.ListQueryer;
-import org.github.wks.jhql.query.LiteralQueryer;
-import org.github.wks.jhql.query.ObjectQueryer;
-import org.github.wks.jhql.query.Queryer;
-import org.github.wks.jhql.query.SingleQueryer;
-import org.github.wks.jhql.query.TextQueryer;
-import org.github.wks.jhql.query.ZipQueryer;
-import org.github.wks.jhql.query.annotation.Required;
-
 /**
  * A factory class that generates Queryer objects from JSON documents.
  */
@@ -49,6 +40,7 @@ public class JsonQueryerFactory {
 
 	static {
 		namedQueryers.put("text", TextQueryer.class);
+		namedQueryers.put("html", HtmlQueryer.class);
 		namedQueryers.put("int", IntQueryer.class);
 		namedQueryers.put("single", SingleQueryer.class);
 		namedQueryers.put("list", ListQueryer.class);

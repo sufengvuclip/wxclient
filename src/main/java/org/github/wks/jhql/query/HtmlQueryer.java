@@ -24,27 +24,44 @@ import java.util.Map;
  * It makes an XPath query on a DOM node and returns the concatenated text
  * contents in all matching nodes.
  */
-public class TextQueryer extends XPathQueryer<String> {
+public class HtmlQueryer extends XPathHtmlQueryer<String> {
 	private boolean trim = true;
 
 	public void setTrim(boolean trim) {
 		this.trim = trim;
 	}
 
-	public TextQueryer() {
+	public HtmlQueryer() {
 	}
 
-	public TextQueryer(String xPathExpression) throws IllegalArgumentException {
+	public HtmlQueryer(String xPathExpression) throws IllegalArgumentException {
 		this.setValue(xPathExpression);
 	}
-	
+
+/*	@Override
+	protected String generate(Node node, Map<String,Object> context) {
+		try {
+			@SuppressWarnings("unchecked")
+			List<Node> results = xPath.selectNodes(node);
+			System.out.println(xPath.toString());
+			System.out.println(node.getTextContent());
+			StringBuilder sb = new StringBuilder();
+			for (Node n : results) {
+				sb.append(n.toString());
+			}
+
+			return sb.toString();
+		} catch (JaxenException e) {
+			throw new ParsingException("Error selecting " + xPath + " on "
+					+ node, e);
+		}
+	}*/
 
 	public String convert(Object obj, Map<String, Object> context) {
 		String result = (String)obj;
-		/*if(trim) {
+		if(trim) {
 			result = result.trim();
-		}*/
-		result = result.trim();
+		}
 		return result;
 	}
 

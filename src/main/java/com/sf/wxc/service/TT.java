@@ -3,7 +3,6 @@ package com.sf.wxc.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sf.wxc.beans.Article;
 import com.sf.wxc.util.HttpClientUtil;
-import com.sun.deploy.net.URLEncoder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.jsoup.Jsoup;
@@ -12,6 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;

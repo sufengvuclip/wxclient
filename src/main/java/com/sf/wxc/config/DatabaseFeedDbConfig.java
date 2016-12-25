@@ -18,7 +18,8 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 
 @Configuration
-@PropertySource({"classpath:persistence-multiple-db.properties"})
+@PropertySource({"classpath:application.properties","file:/D:\\ideaworkspace\\github\\persistence-multiple-db.properties"})
+//@PropertySource({"classpath:application.properties","/home/admin/persistence-multiple-db.properties"})
 @EnableJpaRepositories(
         basePackages = "com.sf.wxc.repository.db.feeddb",
         entityManagerFactoryRef = "feedDbEntityManager",
