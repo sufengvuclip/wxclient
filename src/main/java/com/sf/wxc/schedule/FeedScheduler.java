@@ -43,10 +43,11 @@ public class FeedScheduler {
                     BaseParser parser = (BaseParser) parserClazz.newInstance();
                     List<?> list = parser.parseListPage(feed);
                     for (Object o : list) {
-                        //logger.info(o.toString());
                         if(entityClazz.equals(FeedArticle.class)) {
-                            if(((FeedArticle)o).validated())
+                            if(((FeedArticle)o).validated()) {
                                 feedArticleDbRepository.save((FeedArticle) o);
+                                logger.info("insert article {} {}",((FeedArticle)o).getTitle(),((FeedArticle)o).getUrl());
+                            }
                         }
                     }
                 } catch (Exception e) {
