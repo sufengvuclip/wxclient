@@ -39,7 +39,9 @@ public class BigDataWayScheduler {
         int lastId = -1;
         do {
             try {
-                lastId = NumberUtils.toInt(FileUtils.readFileToString(lastidFile,"utf-8"),-1);
+                String text = FileUtils.readFileToString(lastidFile,"utf-8");
+                logger.info("text {}",text);
+                lastId = NumberUtils.toInt(text,-1);
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error(e.toString());
