@@ -33,7 +33,7 @@ CREATE TABLE `article` (
   `description` varchar(1024) DEFAULT NULL,
   `content` TEXT NOT NULL,
   `author` varchar(256) DEFAULT NULL,
-  `publishDate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `publishDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `grabDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `tags` varchar(256) DEFAULT NULL,
   `category` varchar(256) DEFAULT NULL,
