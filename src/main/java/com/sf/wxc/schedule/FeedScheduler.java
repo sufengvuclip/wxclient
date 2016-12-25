@@ -8,6 +8,7 @@ import com.sf.wxc.repository.db.feeddb.FeedDbRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ import java.util.List;
  * Created by Su Feng on 2016/12/22.
  */
 @Component
+@EnableScheduling
 public class FeedScheduler {
     private static Logger logger = LoggerFactory.getLogger(FeedScheduler.class);
 
