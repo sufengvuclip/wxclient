@@ -18,7 +18,7 @@ public class DrupalConstant {
             "  ],\n" +
             "  \"name\": [\n" +
             "    {\n" +
-            "      \"value\": \"{1}\",\n" +
+            "      \"value\": \"{0}\",\n" +
             "      \"lang\": \"zh-hans\"\n" +
             "    }\n" +
             "  ]\n" +

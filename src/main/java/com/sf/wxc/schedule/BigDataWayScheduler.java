@@ -1,6 +1,7 @@
 package com.sf.wxc.schedule;
 
 import com.sf.wxc.beans.FeedArticle;
+import com.sf.wxc.repository.db.feeddb.ArticleDao;
 import com.sf.wxc.repository.db.feeddb.FeedArticleDbRepository;
 import com.sf.wxc.service.BigDataWay;
 import org.apache.commons.io.FileUtils;
@@ -13,7 +14,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -24,6 +24,8 @@ public class BigDataWayScheduler {
     private static Logger logger = LoggerFactory.getLogger(BigDataWayScheduler.class);
     @Autowired
     FeedArticleDbRepository feedArticleDbRepository;
+    @Autowired
+    ArticleDao articleDao;
     @Autowired
     BigDataWay bigDataWay;
     @Autowired
@@ -45,7 +47,8 @@ public class BigDataWayScheduler {
                 logger.error("read lastidFile error {}",lastidFilePath);
                 break;
             }
-            articleList = feedArticleDbRepository.queryByMinID(lastId, 100);
+            logger.info("read last article id {}, start post new articles...",lastId);
+            articleList = articleDao.queryArticles(lastId, 100);
             if (articleList != null && articleList.size() > 0) {
                 for (FeedArticle article : articleList) {
                     String nodeId = bigDataWay.postArticle(article);
