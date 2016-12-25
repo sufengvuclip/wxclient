@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,7 +58,7 @@ public class BigDataWay {
         Map<String,Object> headers = new HashMap<>();
         headers.put("Authorization","Basic YmlnZGF0YXdheTptZWl5b3VtaW1hbWE=");
         headers.put("Content-Type","application/hal+json");
-        String body = MessageFormat.format(DrupalConstant.tagPostContent,tag);
+        String body = DrupalConstant.tagPostContent.replaceAll("###tag###",tag.trim());
         try {
             String response = HttpClientUtil.httpPostRequest(DrupalConstant.tagPostUrl,body,headers,false);
             JSONObject root = new JSONObject(response);
