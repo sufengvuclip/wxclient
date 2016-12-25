@@ -156,6 +156,17 @@ public class BigDataWay {
 
         _embedded.put("http://www.bigdataway.net/rest/relation/node/article/field_tags",tags);
         root.put("_embedded",_embedded);
+
+        String originUrl = article.getUrl();
+        if(originUrl!=null && originUrl.startsWith("http")){
+            JSONArray urlArr = new JSONArray();
+            JSONObject originUrlNode = new JSONObject();
+            originUrlNode.put("uri",originUrl);
+            originUrlNode.put("title","点击阅读原文");
+            urlArr.put(originUrlNode);
+            root.put("field_originurl",urlArr);
+        }
+
         return root.toString();
     }
 }
