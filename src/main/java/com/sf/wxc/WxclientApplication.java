@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-@ComponentScan
+@ComponentScan("com.sf.wxc.schedule")
 public class WxclientApplication {
 
 	public static void main(String[] args) {
