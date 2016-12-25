@@ -30,6 +30,7 @@ public class FeedScheduler {
      */
     @Scheduled(fixedDelay = 120 * 60 * 1000)
     public void parseFeeds() {
+        System.out.println("start parse feeds....");
         List<Feed> feeds = feedDbRepository.findAll();
         if (feeds != null && feeds.size() > 0) {
             for (Feed feed : feeds) {

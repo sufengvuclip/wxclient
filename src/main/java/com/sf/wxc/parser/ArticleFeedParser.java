@@ -67,9 +67,9 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser{
         ((FeedArticle) article).setDomain(feed.getDomain());
         ((FeedArticle) article).setFeedId(feed.getId());
         ((FeedArticle) article).setCategory(feed.getCategory());
-        ((FeedArticle) article).setContent(map.get("content").toString());
-        ((FeedArticle) article).setAuthor(map.get("author").toString());
-        ((FeedArticle) article).setTags(map.get("tags").toString());
+        ((FeedArticle) article).setContent(map.get("content")==null?null:map.get("content").toString());
+        ((FeedArticle) article).setAuthor(map.get("author")==null?null:map.get("author").toString());
+        ((FeedArticle) article).setTags(map.get("tags")==null?null:map.get("tags").toString());
 
         return (FeedArticle) article;
     }
