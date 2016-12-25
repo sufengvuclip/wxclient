@@ -4,7 +4,6 @@ package com.sf.wxc.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -44,7 +43,6 @@ public class DatabaseBigdatawayDbConfig {
     }
 
     @Bean(name = "bigdatawayDbEntityManager")
-    @Primary
     public LocalContainerEntityManagerFactoryBean bigdatawayDbEntityManager() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setPersistenceUnitName("bigdatawayDb");
@@ -62,7 +60,6 @@ public class DatabaseBigdatawayDbConfig {
     }
 
     @Bean(name = "bigdatawayDbTransactionManager")
-    @Primary
     public PlatformTransactionManager bigdatawayDbTransactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(bigdatawayDbEntityManager().getObject());
