@@ -21,6 +21,19 @@ import java.util.Map;
  */
 public abstract class CommonDao {
     protected abstract EntityManager getEntityManager();
+
+    public String queryString(String sql,Map<String, Object> params){
+        Session session = getEntityManager().unwrap(org.hibernate.Session.class);
+        SQLQuery query = session.createSQLQuery(sql);
+        if (params != null) {
+            for (String key : params.keySet()) {
+                query.setParameter(key, params.get(key));
+            }
+        }
+        Object ret = query.uniqueResult();
+        return ret==null?null:ret.toString();
+    }
+
     @SuppressWarnings("unchecked")
     public List<?> queryListEntity(String sql, Map<String, Object> params, Class<?> clazz){
         Session session = getEntityManager().unwrap(org.hibernate.Session.class);

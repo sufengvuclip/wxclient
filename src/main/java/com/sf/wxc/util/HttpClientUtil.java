@@ -165,10 +165,15 @@ public class HttpClientUtil {
     }
 
     public static String httpPostRequest(String url, String body) throws UnsupportedEncodingException {
-        return httpPostRequest(url,body,true);
+        return httpPostRequest(url,body,null,true);
     }
-    public static String httpPostRequest(String url, String body, boolean mobileUA) throws UnsupportedEncodingException {
+    public static String httpPostRequest(String url, String body, Map<String, Object> headers, boolean mobileUA) throws UnsupportedEncodingException {
         HttpPost httpPost = new HttpPost(url);
+        if(headers!=null) {
+            for (Map.Entry<String, Object> param : headers.entrySet()) {
+                httpPost.addHeader(param.getKey(), String.valueOf(param.getValue()));
+            }
+        }
         httpPost.setEntity(new StringEntity(body, UTF_8));
         return getResult(httpPost, mobileUA);
     }

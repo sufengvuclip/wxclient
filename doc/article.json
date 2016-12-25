@@ -1,0 +1,56 @@
+{
+  "_links": {
+    "type": {
+      "href": "http://www.bigdataway.net/rest/type/node/article"
+    },
+    "http://www.bigdataway.net/rest/relation/node/article/field_tags": {
+      "href": "http://www.bigdataway.net/taxonomy/term/1?_format=hal_json"
+    }
+  },
+  "title": [
+    {
+      "value": "测试",
+      "lang": "zh-hans"
+    }
+  ],
+  "body": [
+    {
+      "value": "基于机器学习的决策为何有偏见？计算机科学家也说不清楚",
+      "format": "full_html",
+      "summary": "summary",
+      "lang": "zh-hans"
+    }
+  ],
+  "_embedded": {
+    "http://www.bigdataway.net/rest/relation/node/article/field_tags": [
+      {
+        "_links": {
+          "self": {
+            "href": "http://example.com/taxonomy/term/1?_format=hal_json"
+          },
+          "type": {
+            "href": "http://example.com/rest/type/taxonomy_term/tags"
+          }
+        },
+/*        "uuid": [
+          {
+            "value": "ff61ea71-2540-47fe-a4bb-384b12d4de47"
+          }
+        ],*/
+        "lang": "zh-hans"
+      }
+    ]
+  }
+/*  "field_tags": [
+    {
+      "value": "测试",
+      "lang": "zh-hans"
+    }
+  ],
+  "field_category": [
+    {
+      "value": "news",
+      "lang": "zh-hans"
+    }
+  ]*/
+}

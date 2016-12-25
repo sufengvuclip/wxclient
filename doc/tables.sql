@@ -41,3 +41,5 @@ CREATE TABLE `article` (
   UNIQUE KEY `article_field__url__value` (`url`),
   UNIQUE KEY `article_field__title__value` (`title`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='The base table for article entities.'
+
+
