@@ -32,9 +32,9 @@ public class BigDataWay {
         headers.put("Authorization","Basic YmlnZGF0YXdheTptZWl5b3VtaW1hbWE=");
         headers.put("Content-Type","application/hal+json");
         try {
-            logger.info("article body: {}", body);
+            //logger.info("article body: {}", body);
             String response = HttpClientUtil.httpPostRequest(DrupalConstant.articlePostUrl,body,headers,false);
-            logger.info("article post response: {}",response);
+            //logger.info("article post response: {}",response);
             JSONObject root = new JSONObject(response);
             ret = root.getJSONArray("nid").getJSONObject(0).getString("value");
         } catch (Exception e) {

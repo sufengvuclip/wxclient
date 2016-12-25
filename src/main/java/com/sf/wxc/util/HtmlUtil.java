@@ -1,5 +1,6 @@
 package com.sf.wxc.util;
 
+import org.github.wks.jhql.util.CopyRightUtil;
 import org.w3c.dom.Node;
 
 import javax.xml.transform.*;
@@ -21,7 +22,9 @@ public class HtmlUtil {
             proc.setOutputProperty(OutputKeys.METHOD, "html");
             for (int i = 0; i < node.getChildNodes().getLength(); i++)
             {
-                proc.transform(new DOMSource(node.getChildNodes().item(i)), result);
+                if(!CopyRightUtil.containCopyRightInfo(node.getChildNodes().item(i).getTextContent())) {
+                    proc.transform(new DOMSource(node.getChildNodes().item(i)), result);
+                }
             }
         } catch (TransformerException e) {
             e.printStackTrace();

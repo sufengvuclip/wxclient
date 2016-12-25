@@ -38,25 +38,6 @@ public class HtmlQueryer extends XPathHtmlQueryer<String> {
 		this.setValue(xPathExpression);
 	}
 
-/*	@Override
-	protected String generate(Node node, Map<String,Object> context) {
-		try {
-			@SuppressWarnings("unchecked")
-			List<Node> results = xPath.selectNodes(node);
-			System.out.println(xPath.toString());
-			System.out.println(node.getTextContent());
-			StringBuilder sb = new StringBuilder();
-			for (Node n : results) {
-				sb.append(n.toString());
-			}
-
-			return sb.toString();
-		} catch (JaxenException e) {
-			throw new ParsingException("Error selecting " + xPath + " on "
-					+ node, e);
-		}
-	}*/
-
 	public String convert(Object obj, Map<String, Object> context) {
 		String result = (String)obj;
 		if(trim) {
