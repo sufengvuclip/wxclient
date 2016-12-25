@@ -92,10 +92,10 @@ public class BigDataWay {
         root.put("title",title);
 
         JSONObject body = new JSONObject();
-        title.put("value",article.getContent());
-        title.put("summary",article.getDescription());
-        title.put("lang","zh-hans");
-        title.put("format","full_html");
+        body.put("value",article.getContent());
+        body.put("summary",article.getDescription()==null?"":article.getDescription());
+        body.put("lang","zh-hans");
+        body.put("format","full_html");
         root.put("body",body);
 
         JSONObject _embedded = new JSONObject();
