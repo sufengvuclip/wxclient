@@ -36,6 +36,7 @@ public class BigDataWayScheduler {
         List<FeedArticle> articleList = null;
         String lastidFilePath = env.getProperty("drupal.post.last.artile.id.file");
         File lastidFile = new File(lastidFilePath);
+        int error = 0;
         int lastId = -1;
         do {
             try {
@@ -60,6 +61,12 @@ public class BigDataWayScheduler {
                             FileUtils.writeStringToFile(lastidFile, String.valueOf(article.getId()), "utf-8");
                         } catch (Exception e) {
                             e.printStackTrace();
+                            break;
+                        }
+                    }else{
+                        error++;
+                        if(error>=20){
+                            logger.error("post article error time over 20, break");
                             break;
                         }
                     }

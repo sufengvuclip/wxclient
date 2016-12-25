@@ -8,6 +8,8 @@ import com.sf.wxc.util.HttpClientUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +21,7 @@ import java.util.Map;
  */
 @Component
 public class BigDataWay {
+    private static Logger logger = LoggerFactory.getLogger(BigDataWay.class);
     @Autowired
     EntityDao entityDao;
     private static ObjectMapper objectMapper = new ObjectMapper();
@@ -29,11 +32,14 @@ public class BigDataWay {
         headers.put("Authorization","Basic YmlnZGF0YXdheTptZWl5b3VtaW1hbWE=");
         headers.put("Content-Type","application/hal+json");
         try {
+            logger.info("article body: {}", body);
             String response = HttpClientUtil.httpPostRequest(DrupalConstant.articlePostUrl,body,headers,false);
+            logger.info("article post response: {}",response);
             JSONObject root = new JSONObject(response);
             ret = root.getJSONArray("nid").getJSONObject(0).getString("value");
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error(e.toString());
         }
         return ret;
     }
