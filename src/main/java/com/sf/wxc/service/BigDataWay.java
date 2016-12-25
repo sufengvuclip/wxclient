@@ -111,12 +111,12 @@ public class BigDataWay {
                                 "        ]");
                         tagNode.put("uuid",uuidArr);
                         JSONObject type = new JSONObject("{\n" +
-                                "\n" +
                                 "          \"type\": {\n" +
                                 "            \"href\": \"http://www.bigdataway.net/rest/type/taxonomy_term/tags\"\n" +
                                 "          }\n" +
                                 "        }");
                         tagNode.put("_links",type);
+                        tags.put(tagNode);
 
                     }
                 }
