@@ -315,8 +315,8 @@ public class HttpClientUtil {
         return ret;
     }
 
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         System.out.println(httpGetRequest("http://m.toutiao.com/i6365076442560070146/info"));
-    }
+    }*/
 
 }

@@ -25,7 +25,7 @@ public class FeedScheduler {
     /**
      * every 1 hour run.
      */
-    @Scheduled(fixedDelay = 10 * 60 * 1000)
+    @Scheduled(fixedDelay = 120 * 60 * 1000)
     public void parseFeeds() {
         List<Feed> feeds = feedDbRepository.findAll();
         if (feeds != null && feeds.size() > 0) {

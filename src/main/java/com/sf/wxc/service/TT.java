@@ -88,8 +88,8 @@ public class TT {
         private String thumbnailUrl;
     }
 
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         TT tt = new TT();
         tt.search("搞笑");
-    }
+    }*/
 }

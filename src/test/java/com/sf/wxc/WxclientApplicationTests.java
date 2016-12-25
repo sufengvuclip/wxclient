@@ -38,7 +38,7 @@ public class WxclientApplicationTests {
 	public void contextLoads() {
 	}
 
-	@Test
+
 	public void uploadnews(){
 		List<Article> articles = tt.search("搞笑");
 		List<Article> uploadArticles = new ArrayList<>();
@@ -77,17 +77,6 @@ public class WxclientApplicationTests {
 		"toutiao.com",listHql,contentHql,"com.sf.wxc.parser.ArticleFeedParser","entityclass",true,"http://www.toutiao.com",true,false,1,"tensorflow","");
 		Class clazz = Class.forName(feed.getParserClass());
 		BaseParser parser = (BaseParser) clazz.newInstance();
-//		String doc = HttpClientUtil.httpGetRequest(feed.getUrl());
-//		System.out.println(doc.toString());
-
-/*		ObjectMapper jsonMapper = new ObjectMapper();
-		XmlMapper mapper = new XmlMapper();
-		Map map = jsonMapper.readValue(doc,Map.class);
-		System.out.println(mapper.writeValueAsString(map));*/
-//		JSONObject json = new JSONObject(doc.toString());
-//		String xml = XML.toString(json);
-		//System.out.println(xml);
-
 		List<?> list = parser.parseListPage(feed);
 		for(Object o: list){
 			System.out.println(o.toString());

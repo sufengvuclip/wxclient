@@ -2,10 +2,7 @@ package com.sf.wxc.config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -18,8 +15,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 
 @Configuration
-@PropertySource({"classpath:application.properties","file:/D:\\ideaworkspace\\github\\persistence-multiple-db.properties"})
-//@PropertySource({"classpath:application.properties","/home/admin/persistence-multiple-db.properties"})
+@PropertySource({"classpath:application.properties","file:/D:\\ideaworkspace\\github\\persistence-multiple-db.properties","file:/program/wxc/conf/persistence-multiple-db.properties"})
 @EnableJpaRepositories(
         basePackages = "com.sf.wxc.repository.db.feeddb",
         entityManagerFactoryRef = "feedDbEntityManager",
