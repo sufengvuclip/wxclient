@@ -53,6 +53,12 @@ public class FeedScheduler {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                try {
+                    //pause 2 minutes for each feed.
+                    Thread.sleep(2*60*1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

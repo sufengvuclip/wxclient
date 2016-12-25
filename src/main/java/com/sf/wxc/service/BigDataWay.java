@@ -132,6 +132,28 @@ public class BigDataWay {
             }
         }
 
+        String category = article.getCategory();
+        if(category!=null && DrupalConstant.categoryUuidMap.get(category)!=null){
+            String uuid = DrupalConstant.categoryUuidMap.get(category);
+            JSONArray categories = new JSONArray();
+            JSONObject cNode = new JSONObject();
+            cNode.put("lang", "zh-hans");
+            JSONArray uuidArr = new JSONArray("[\n" +
+                    "          {\n" +
+                    "            \"value\": \"" + uuid + "\"\n" +
+                    "          }\n" +
+                    "        ]");
+            cNode.put("uuid",uuidArr);
+            JSONObject type = new JSONObject("{\n" +
+                    "          \"type\": {\n" +
+                    "            \"href\": \"http://www.bigdataway.net/rest/type/taxonomy_term/category\"\n" +
+                    "          }\n" +
+                    "        }");
+            cNode.put("_links",type);
+            categories.put(cNode);
+            _embedded.put("http://www.bigdataway.net/rest/relation/node/article/field_category",categories);
+        }
+
         _embedded.put("http://www.bigdataway.net/rest/relation/node/article/field_tags",tags);
         root.put("_embedded",_embedded);
         return root.toString();

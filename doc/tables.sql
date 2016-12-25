@@ -43,3 +43,6 @@ CREATE TABLE `article` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='The base table for article entities.'
 
 
+  SELECT * FROM taxonomy_term_field_data a, taxonomy_term_data b WHERE a.vid='category' AND a.tid=b.tid
+
+
