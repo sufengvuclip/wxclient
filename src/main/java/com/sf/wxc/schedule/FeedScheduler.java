@@ -8,6 +8,7 @@ import com.sf.wxc.repository.db.feeddb.FeedDbRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +32,9 @@ public class FeedScheduler {
     @Scheduled(fixedDelay = 120 * 60 * 1000)
     public void parseFeeds() {
         logger.info("start parse feeds....");
-        List<Feed> feeds = feedDbRepository.findAll();
+
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        List<Feed> feeds = feedDbRepository.findAll(sort);
         if (feeds != null && feeds.size() > 0) {
             for (Feed feed : feeds) {
                 logger.info("parsing feed {}",feed.toString());
