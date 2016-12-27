@@ -3,6 +3,8 @@ package com.sf.wxc.beans;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -36,5 +38,10 @@ public class Feed {
     private String loginJson;
 
     public Feed() {
+    }
+
+    public JSONObject getLoginJsonObject(){
+        if(StringUtils.trimToNull(loginJson)==null) return null;
+        return new JSONObject(loginJson);
     }
 }

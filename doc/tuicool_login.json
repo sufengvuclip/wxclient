@@ -1,0 +1,25 @@
+{
+  "loginurl": "http://www.tuicool.com/login",
+  "formdata":{
+    "utf8":"✓",
+    "authenticity_token":"5vg/Z5gF6fAL2cgHONRAHjIqI2PG8zxjB5H5AzpwLOk=",
+    "email":"sufengster@163.com",
+    "password":"meiyoumima",
+    "remember":"1"
+  },
+  "headers":{
+    "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Accept-Encoding":"gzip, deflate",
+    "Accept-Language":"zh-CN,zh;q=0.8,en;q=0.6",
+    "Cache-Control":"max-age=0",
+    "Connection":"keep-alive",
+    "Content-Length":"140",
+    "Content-Type":"application/x-www-form-urlencoded",
+    "Cookie":"_tuicool_session=BAh7CEkiD3Nlc3Npb25faWQGOgZFRkkiJWNmZjgwMjA3ZTAxY2ZlZjQ3YWQxM2ZmOWRlNzZlNWQwBjsAVEkiEF9jc3JmX3Rva2VuBjsARkkiMTV2Zy9aNWdGNmZBTDJjZ0hPTlJBSGpJcUkyUEc4enhqQjVINUF6cHdMT2s9BjsARkkiDnJldHVybl90bwY7AEYiHGh0dHA6Ly93d3cudHVpY29vbC5jb20v--95270b2a9704e785d89cad5824ecda7f3b65a84d; CNZZDATA5541078=cnzz_eid%3D1043518369-1482828700-http%253A%252F%252Fwww.tuicool.com%252F%26ntime%3D1482828700",
+    "Host":"www.tuicool.com",
+    "Origin":"http://www.tuicool.com",
+    "Referer":"http://www.tuicool.com/login",
+    "Upgrade-Insecure-Requests":"1",
+    "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36"
+  }
+}

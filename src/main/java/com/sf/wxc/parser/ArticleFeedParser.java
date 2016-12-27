@@ -9,7 +9,6 @@ import com.sf.wxc.util.HttpClientUtil;
 import com.sf.wxc.util.SpringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -26,7 +25,7 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser{
     public List<FeedArticle> parseListPage(Feed feed) {
         List<FeedArticle> ret = null;
 
-        String doc = HttpClientUtil.httpGetRequest(feed.getUrl(),feed.getListPageMobile());
+        String doc = HttpClientUtil.httpGetRequest(feed.getUrl(),feed.getListPageMobile(),feed.getLoginJsonObject());
         Object obj = parse(doc, feed.getListJhql());
 
         LinkedHashMap<String, List> map = (LinkedHashMap) obj;
@@ -59,10 +58,10 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser{
         }
         String contentUrl = ((FeedArticle) article).getUrl();
         if(feed.getContentPageRedirect()){
-            contentUrl = HttpClientUtil.httpGetRedirectFinalUrl(contentUrl, feed.getContentPageMobile());
+            contentUrl = HttpClientUtil.httpGetRedirectFinalUrl(contentUrl, feed.getContentPageMobile(),feed.getLoginJsonObject());
         }
 
-        String doc = HttpClientUtil.httpGetRequest(contentUrl, feed.getContentPageMobile());
+        String doc = HttpClientUtil.httpGetRequest(contentUrl, feed.getContentPageMobile(),feed.getLoginJsonObject());
         Object obj = parse(doc, feed.getContentJhql());
         LinkedHashMap<String, Object> map = (LinkedHashMap) obj;
         ((FeedArticle) article).setDomain(feed.getDomain());

@@ -1,5 +1,7 @@
 package com.sf.wxc.util;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,23 +23,27 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 public class HttpClientUtil {
-    private static PoolingHttpClientConnectionManager cm;
-    private static String EMPTY_STR = "";
-    private static String UTF_8 = "UTF-8";
+    private static Cache<String, CloseableHttpClient> loginClientCache = CacheBuilder.newBuilder().expireAfterWrite(180, TimeUnit.MINUTES).build();
     final static int BUFFER_SIZE = 1024;
     final static String androidUA = "Mozilla/5.0 (Linux; U; Android 4.4.4; zh-CN; MI 3W Build/KTU84P) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 UCBrowser/10.0.0.488 U3/0.8.0 Mobile Safari/534.30";
     final static String PCUA = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36";
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static PoolingHttpClientConnectionManager cm;
+    private static String EMPTY_STR = "";
+    private static String UTF_8 = "UTF-8";
+    //private static HashMap<String, CloseableHttpClient> loginClientsMap = new HashMap<>();
 
     private static void init() {
         if (cm == null) {
@@ -57,44 +63,71 @@ public class HttpClientUtil {
         return HttpClients.custom().setConnectionManager(cm).build();
     }
 
-    private static HashMap<String, CloseableHttpClient> loginClientsMap = new HashMap<>();
-
     /**
      * get client with login session.
+     *
      * @param loginInfo
      * @return
      */
     private static CloseableHttpClient getHttpClient(JSONObject loginInfo) {
         CloseableHttpClient ret = null;
-        String key = loginInfo.getString("key");
-        ret = loginClientsMap.get(key);
-        if(ret == null){
+        String loginurl = loginInfo.getString("loginurl");
+        ret = loginClientCache.getIfPresent(loginurl);
+        if (ret == null) {
             //create new client instance
-            ret = HttpClients.createDefault();
-            JSONObject formData = loginInfo.getJSONObject("formdata");
+            try {
+                ret = HttpClients.createDefault();
+                JSONObject formdata = loginInfo.getJSONObject("formdata");
+                JSONObject headers = loginInfo.getJSONObject("headers");
 
+                if(loginurl.contains("tuicool.com")){
+                    HttpGet httpGet = new HttpGet(loginurl);
+                    CloseableHttpResponse response = ret.execute(httpGet);
+                    String responseText = EntityUtils.toString(response.getEntity());
+
+                }
+
+                Map<String, Object> headersMap = null;
+                Map<String, Object> formdataMap = null;
+                headersMap = objectMapper.readValue(headers.toString(), Map.class);
+                formdataMap = objectMapper.readValue(formdata.toString(), Map.class);
+                ret = HttpClients.createDefault();
+                //login
+                HttpPost httpPost = new HttpPost(loginurl);
+                for (Map.Entry<String, Object> param : headersMap.entrySet()) {
+                    httpPost.addHeader(param.getKey(), String.valueOf(param.getValue()));
+                }
+
+                ArrayList<NameValuePair> pairs = covertParams2NVPS(formdataMap);
+                httpPost.setEntity(new UrlEncodedFormEntity(pairs, UTF_8));
+                ret.execute(httpPost);
+            } catch (Exception e) {
+                e.printStackTrace();
+                ret = null;
+            }
         }
-
+        if(ret!=null) loginClientCache.put(loginurl,ret);
         return ret;
     }
 
 
     public static String httpGetRequest(String url) {
-        return httpGetRequest(url,true,null);
+        return httpGetRequest(url, true, null);
     }
+
     /**
-     *
      * @param url
      * @return
      */
     public static String httpGetRequest(String url, boolean mobileUA, JSONObject loginInfo) {
         HttpGet httpGet = new HttpGet(url);
-        return getResult(httpGet,mobileUA, loginInfo);
+        return getResult(httpGet, mobileUA, loginInfo);
     }
 
     public static String httpGetRequest(String url, Map<String, Object> params) throws URISyntaxException {
-        return httpGetRequest(url,params,true, null);
+        return httpGetRequest(url, params, true, null);
     }
+
     public static String httpGetRequest(String url, Map<String, Object> params, boolean mobileUA, JSONObject loginInfo) throws URISyntaxException {
         URIBuilder ub = new URIBuilder();
         ub.setPath(url);
@@ -103,14 +136,15 @@ public class HttpClientUtil {
         ub.setParameters(pairs);
 
         HttpGet httpGet = new HttpGet(ub.build());
-        return getResult(httpGet, mobileUA,loginInfo);
+        return getResult(httpGet, mobileUA, loginInfo);
     }
 
 
     public static String httpGetRequest(String url, Map<String, Object> headers, Map<String, Object> params)
             throws URISyntaxException {
-        return httpGetRequest(url,headers,params,true, null);
+        return httpGetRequest(url, headers, params, true, null);
     }
+
     public static String httpGetRequest(String url, Map<String, Object> headers, Map<String, Object> params, boolean mobileUA, JSONObject loginInfo)
             throws URISyntaxException {
         URIBuilder ub = new URIBuilder();
@@ -127,12 +161,12 @@ public class HttpClientUtil {
     }
 
     public static String httpPostRequest(String url) {
-        return httpPostRequest(url,true, null);
+        return httpPostRequest(url, true, null);
     }
 
     public static String httpPostRequest(String url, boolean mobileUA, JSONObject loginInfo) {
         HttpPost httpPost = new HttpPost(url);
-        return getResult(httpPost,mobileUA, loginInfo);
+        return getResult(httpPost, mobileUA, loginInfo);
     }
 
     public static String uploadFile(String url, String filepath, Map<String, String> params) {
@@ -168,7 +202,7 @@ public class HttpClientUtil {
                 System.out.println("Response content length: " + resEntity.getContentLength());
             }
             ret = IOUtils.toString(resEntity.getContent(), UTF_8);
-            System.out.println("Response : "+ret);
+            System.out.println("Response : " + ret);
             EntityUtils.consume(resEntity);
         } catch (IOException e) {
             e.printStackTrace();
@@ -178,32 +212,33 @@ public class HttpClientUtil {
     }
 
     public static String httpPostRequest(String url, Map<String, Object> params) throws UnsupportedEncodingException {
-        return httpPostRequest(url,params,true,null);
+        return httpPostRequest(url, params, true, null);
     }
+
     public static String httpPostRequest(String url, Map<String, Object> params, boolean mobileUA, JSONObject loginInfo) throws UnsupportedEncodingException {
         HttpPost httpPost = new HttpPost(url);
         ArrayList<NameValuePair> pairs = covertParams2NVPS(params);
         httpPost.setEntity(new UrlEncodedFormEntity(pairs, UTF_8));
-        return getResult(httpPost,mobileUA, loginInfo);
+        return getResult(httpPost, mobileUA, loginInfo);
     }
 
     public static String httpPostRequest(String url, String body) throws UnsupportedEncodingException {
-        return httpPostRequest(url,body,null,true,null);
+        return httpPostRequest(url, body, null, true, null);
     }
+
     public static String httpPostRequest(String url, String body, Map<String, Object> headers, boolean mobileUA, JSONObject loginInfo) throws UnsupportedEncodingException {
         HttpPost httpPost = new HttpPost(url);
-        if(headers!=null) {
+        if (headers != null) {
             for (Map.Entry<String, Object> param : headers.entrySet()) {
                 httpPost.addHeader(param.getKey(), String.valueOf(param.getValue()));
             }
         }
         httpPost.setEntity(new StringEntity(body, UTF_8));
-        return getResult(httpPost, mobileUA,loginInfo);
+        return getResult(httpPost, mobileUA, loginInfo);
     }
 
-    public static String httpPostRequest(String url, Map<String, Object> headers, Map<String, Object> params) throws UnsupportedEncodingException
-    {
-        return httpPostRequest(url,headers,params,true,null);
+    public static String httpPostRequest(String url, Map<String, Object> headers, Map<String, Object> params) throws UnsupportedEncodingException {
+        return httpPostRequest(url, headers, params, true, null);
     }
 
     public static String httpPostRequest(String url, Map<String, Object> headers, Map<String, Object> params, boolean mobileUA, JSONObject loginInfo)
@@ -216,7 +251,7 @@ public class HttpClientUtil {
 
         ArrayList<NameValuePair> pairs = covertParams2NVPS(params);
         httpPost.setEntity(new UrlEncodedFormEntity(pairs, UTF_8));
-        return getResult(httpPost,mobileUA,loginInfo);
+        return getResult(httpPost, mobileUA, loginInfo);
     }
 
 
@@ -236,23 +271,23 @@ public class HttpClientUtil {
      * @return
      */
     private static String getResult(HttpRequestBase request, boolean mobileUA, JSONObject loginInfo) {
-        if(mobileUA)
-            request.setHeader("User-Agent",androidUA);
+        if (mobileUA)
+            request.setHeader("User-Agent", androidUA);
         else
-            request.setHeader("User-Agent",PCUA);
+            request.setHeader("User-Agent", PCUA);
 
         CloseableHttpClient httpClient = null;
-        if(loginInfo!=null){
+        if (loginInfo != null) {
             httpClient = getHttpClient(loginInfo);//only get the client with login session.
-        }else
-        {
+        } else {
             httpClient = HttpClients.createDefault();
         }
 
 //        CloseableHttpClient httpClient = getHttpClient();
         try {
             CloseableHttpResponse response = httpClient.execute(request);
-            System.out.println("response code: "+response.getStatusLine().getStatusCode());;
+            System.out.println("response code: " + response.getStatusLine().getStatusCode());
+            ;
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 // long len = entity.getContentLength();// -1 表示长度未知
@@ -276,24 +311,25 @@ public class HttpClientUtil {
         return EMPTY_STR;
     }
 
-    public static String httpGetRedirectFinalUrl(String url){
-        return httpGetRedirectFinalUrl(url,true,null);
+    public static String httpGetRedirectFinalUrl(String url) {
+        return httpGetRedirectFinalUrl(url, true, null);
     }
+
     public static String httpGetRedirectFinalUrl(String url, boolean mobileUA, JSONObject loginInfo) {
         String ret = null;
         HttpGet httpGet = new HttpGet(url);
-        if(mobileUA)
-            httpGet.setHeader("User-Agent",androidUA);
+        if (mobileUA)
+            httpGet.setHeader("User-Agent", androidUA);
         else
-            httpGet.setHeader("User-Agent",PCUA);
+            httpGet.setHeader("User-Agent", PCUA);
 //        CloseableHttpClient httpClient = getHttpClient();
         CloseableHttpClient httpClient = HttpClients.createDefault();
         try {
             HttpContext context = new BasicHttpContext();
-            CloseableHttpResponse response = httpClient.execute(httpGet,context);
+            CloseableHttpResponse response = httpClient.execute(httpGet, context);
             HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(ExecutionContext.HTTP_REQUEST);
             HttpHost currentHost = (HttpHost) context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
-            if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 ret = (currentReq.getURI().isAbsolute()) ? currentReq.getURI().toString() : (currentHost.toURI() + currentReq.getURI());
             }
         } catch (ClientProtocolException e) {
@@ -319,25 +355,25 @@ public class HttpClientUtil {
 
             HttpEntity entity = response.getEntity();
             org.apache.http.Header contentType = response.getFirstHeader("Content-Type");
-            if(StringUtils.trimToEmpty(contentType.getValue()).contains("gif")){
-                filepath = FilenameUtils.getFullPath(filepath)+ FilenameUtils.getBaseName(filepath)+".gif";
-            }else if(StringUtils.trimToEmpty(contentType.getValue()).contains("png")){
-                filepath = FilenameUtils.getFullPath(filepath)+ FilenameUtils.getBaseName(filepath)+".png";
-            }else if(StringUtils.trimToEmpty(contentType.getValue()).contains("jpeg")){
-                filepath = FilenameUtils.getFullPath(filepath)+ FilenameUtils.getBaseName(filepath)+".jpeg";
-            }else if(StringUtils.trimToEmpty(contentType.getValue()).contains("bmp")){
-                filepath = FilenameUtils.getFullPath(filepath)+ FilenameUtils.getBaseName(filepath)+".bmp";
+            if (StringUtils.trimToEmpty(contentType.getValue()).contains("gif")) {
+                filepath = FilenameUtils.getFullPath(filepath) + FilenameUtils.getBaseName(filepath) + ".gif";
+            } else if (StringUtils.trimToEmpty(contentType.getValue()).contains("png")) {
+                filepath = FilenameUtils.getFullPath(filepath) + FilenameUtils.getBaseName(filepath) + ".png";
+            } else if (StringUtils.trimToEmpty(contentType.getValue()).contains("jpeg")) {
+                filepath = FilenameUtils.getFullPath(filepath) + FilenameUtils.getBaseName(filepath) + ".jpeg";
+            } else if (StringUtils.trimToEmpty(contentType.getValue()).contains("bmp")) {
+                filepath = FilenameUtils.getFullPath(filepath) + FilenameUtils.getBaseName(filepath) + ".bmp";
             }
             InputStream is = entity.getContent();
             File file = new File(filepath);
-            if(!file.getParentFile().exists()) {
+            if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
             FileOutputStream fileout = new FileOutputStream(file);
-            byte[] buffer=new byte[BUFFER_SIZE];
+            byte[] buffer = new byte[BUFFER_SIZE];
             int ch = 0;
             while ((ch = is.read(buffer)) != -1) {
-                fileout.write(buffer,0,ch);
+                fileout.write(buffer, 0, ch);
             }
             is.close();
             fileout.flush();
