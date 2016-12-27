@@ -48,8 +48,13 @@ public class FeedScheduler {
                     for (Object o : list) {
                         if(entityClazz.equals(FeedArticle.class)) {
                             if(((FeedArticle)o).validated()) {
-                                feedArticleDbRepository.save((FeedArticle) o);
-                                logger.info("insert article {} {}",((FeedArticle)o).getTitle(),((FeedArticle)o).getUrl());
+                                try {
+                                    feedArticleDbRepository.save((FeedArticle) o);
+                                    logger.info("insert article {} {}",((FeedArticle)o).getTitle(),((FeedArticle)o).getUrl());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    logger.error("insert article error {} {}",((FeedArticle)o).getTitle(),((FeedArticle)o).getUrl());
+                                }
                             }
                         }
                     }
