@@ -1,0 +1,17 @@
+{
+  "listjson": {
+    "articles": {
+      "_type": "list",
+      "from": ".//div[@class='list_article']/div[@class='single_fake']",
+      "select": {
+        "title": "text:.//a[@class='article-list-title']",
+        "url": "text:.//a[@class='article-list-title']/@href"
+      }
+    }
+  },
+  "contentjson": {
+    "content": "html:.//div[@class='article_body']/div[1]",
+    "author": "text:.//span[@class='from']/a[1]",
+    "tags": "text:.//div[@class='article_meta']//span[@class='new-label']"
+  }
+}

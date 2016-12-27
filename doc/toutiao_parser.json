@@ -1,0 +1,17 @@
+{
+  "listjson": {
+    "articles": {
+      "_type": "list",
+      "from": ".//div[@class='list_content']/section",
+      "select": {
+        "title": "text:.//h3",
+        "url": "text:./a[1]/@href"
+      }
+    }
+  },
+  "contentjson": {
+    "content": "html:.//div[@class='article-content']",
+    "author": "text:.//div[@class='articleInfo']/span[@class='src']",
+    "tags": "text:.//a[@class='label-link']"
+  }
+}
