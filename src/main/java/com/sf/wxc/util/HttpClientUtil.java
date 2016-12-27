@@ -21,10 +21,12 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -55,24 +57,45 @@ public class HttpClientUtil {
         return HttpClients.custom().setConnectionManager(cm).build();
     }
 
+    private static HashMap<String, CloseableHttpClient> loginClientsMap = new HashMap<>();
+
+    /**
+     * get client with login session.
+     * @param loginInfo
+     * @return
+     */
+    private static CloseableHttpClient getHttpClient(JSONObject loginInfo) {
+        CloseableHttpClient ret = null;
+        String key = loginInfo.getString("key");
+        ret = loginClientsMap.get(key);
+        if(ret == null){
+            //create new client instance
+            ret = HttpClients.createDefault();
+            JSONObject formData = loginInfo.getJSONObject("formdata");
+
+        }
+
+        return ret;
+    }
+
 
     public static String httpGetRequest(String url) {
-        return httpGetRequest(url,true);
+        return httpGetRequest(url,true,null);
     }
     /**
      *
      * @param url
      * @return
      */
-    public static String httpGetRequest(String url, boolean mobileUA) {
+    public static String httpGetRequest(String url, boolean mobileUA, JSONObject loginInfo) {
         HttpGet httpGet = new HttpGet(url);
-        return getResult(httpGet,mobileUA);
+        return getResult(httpGet,mobileUA, loginInfo);
     }
 
     public static String httpGetRequest(String url, Map<String, Object> params) throws URISyntaxException {
-        return httpGetRequest(url,params,true);
+        return httpGetRequest(url,params,true, null);
     }
-    public static String httpGetRequest(String url, Map<String, Object> params, boolean mobileUA) throws URISyntaxException {
+    public static String httpGetRequest(String url, Map<String, Object> params, boolean mobileUA, JSONObject loginInfo) throws URISyntaxException {
         URIBuilder ub = new URIBuilder();
         ub.setPath(url);
 
@@ -80,15 +103,15 @@ public class HttpClientUtil {
         ub.setParameters(pairs);
 
         HttpGet httpGet = new HttpGet(ub.build());
-        return getResult(httpGet, mobileUA);
+        return getResult(httpGet, mobileUA,loginInfo);
     }
 
 
     public static String httpGetRequest(String url, Map<String, Object> headers, Map<String, Object> params)
             throws URISyntaxException {
-        return httpGetRequest(url,headers,params,true);
+        return httpGetRequest(url,headers,params,true, null);
     }
-    public static String httpGetRequest(String url, Map<String, Object> headers, Map<String, Object> params, boolean mobileUA)
+    public static String httpGetRequest(String url, Map<String, Object> headers, Map<String, Object> params, boolean mobileUA, JSONObject loginInfo)
             throws URISyntaxException {
         URIBuilder ub = new URIBuilder();
         ub.setPath(url);
@@ -100,16 +123,16 @@ public class HttpClientUtil {
         for (Map.Entry<String, Object> param : headers.entrySet()) {
             httpGet.addHeader(param.getKey(), String.valueOf(param.getValue()));
         }
-        return getResult(httpGet, mobileUA);
+        return getResult(httpGet, mobileUA, loginInfo);
     }
 
     public static String httpPostRequest(String url) {
-        return httpPostRequest(url,true);
+        return httpPostRequest(url,true, null);
     }
 
-    public static String httpPostRequest(String url, boolean mobileUA) {
+    public static String httpPostRequest(String url, boolean mobileUA, JSONObject loginInfo) {
         HttpPost httpPost = new HttpPost(url);
-        return getResult(httpPost,mobileUA);
+        return getResult(httpPost,mobileUA, loginInfo);
     }
 
     public static String uploadFile(String url, String filepath, Map<String, String> params) {
@@ -155,19 +178,19 @@ public class HttpClientUtil {
     }
 
     public static String httpPostRequest(String url, Map<String, Object> params) throws UnsupportedEncodingException {
-        return httpPostRequest(url,params,true);
+        return httpPostRequest(url,params,true,null);
     }
-    public static String httpPostRequest(String url, Map<String, Object> params, boolean mobileUA) throws UnsupportedEncodingException {
+    public static String httpPostRequest(String url, Map<String, Object> params, boolean mobileUA, JSONObject loginInfo) throws UnsupportedEncodingException {
         HttpPost httpPost = new HttpPost(url);
         ArrayList<NameValuePair> pairs = covertParams2NVPS(params);
         httpPost.setEntity(new UrlEncodedFormEntity(pairs, UTF_8));
-        return getResult(httpPost,mobileUA);
+        return getResult(httpPost,mobileUA, loginInfo);
     }
 
     public static String httpPostRequest(String url, String body) throws UnsupportedEncodingException {
-        return httpPostRequest(url,body,null,true);
+        return httpPostRequest(url,body,null,true,null);
     }
-    public static String httpPostRequest(String url, String body, Map<String, Object> headers, boolean mobileUA) throws UnsupportedEncodingException {
+    public static String httpPostRequest(String url, String body, Map<String, Object> headers, boolean mobileUA, JSONObject loginInfo) throws UnsupportedEncodingException {
         HttpPost httpPost = new HttpPost(url);
         if(headers!=null) {
             for (Map.Entry<String, Object> param : headers.entrySet()) {
@@ -175,15 +198,15 @@ public class HttpClientUtil {
             }
         }
         httpPost.setEntity(new StringEntity(body, UTF_8));
-        return getResult(httpPost, mobileUA);
+        return getResult(httpPost, mobileUA,loginInfo);
     }
 
     public static String httpPostRequest(String url, Map<String, Object> headers, Map<String, Object> params) throws UnsupportedEncodingException
     {
-        return httpPostRequest(url,headers,params,true);
+        return httpPostRequest(url,headers,params,true,null);
     }
 
-    public static String httpPostRequest(String url, Map<String, Object> headers, Map<String, Object> params, boolean mobileUA)
+    public static String httpPostRequest(String url, Map<String, Object> headers, Map<String, Object> params, boolean mobileUA, JSONObject loginInfo)
             throws UnsupportedEncodingException {
         HttpPost httpPost = new HttpPost(url);
 
@@ -193,7 +216,7 @@ public class HttpClientUtil {
 
         ArrayList<NameValuePair> pairs = covertParams2NVPS(params);
         httpPost.setEntity(new UrlEncodedFormEntity(pairs, UTF_8));
-        return getResult(httpPost,mobileUA);
+        return getResult(httpPost,mobileUA,loginInfo);
     }
 
 
@@ -212,12 +235,20 @@ public class HttpClientUtil {
      * @param request
      * @return
      */
-    private static String getResult(HttpRequestBase request, boolean mobileUA) {
+    private static String getResult(HttpRequestBase request, boolean mobileUA, JSONObject loginInfo) {
         if(mobileUA)
             request.setHeader("User-Agent",androidUA);
         else
             request.setHeader("User-Agent",PCUA);
-         CloseableHttpClient httpClient = HttpClients.createDefault();
+
+        CloseableHttpClient httpClient = null;
+        if(loginInfo!=null){
+            httpClient = getHttpClient(loginInfo);//only get the client with login session.
+        }else
+        {
+            httpClient = HttpClients.createDefault();
+        }
+
 //        CloseableHttpClient httpClient = getHttpClient();
         try {
             CloseableHttpResponse response = httpClient.execute(request);
@@ -245,6 +276,39 @@ public class HttpClientUtil {
         return EMPTY_STR;
     }
 
+    public static String httpGetRedirectFinalUrl(String url){
+        return httpGetRedirectFinalUrl(url,true,null);
+    }
+    public static String httpGetRedirectFinalUrl(String url, boolean mobileUA, JSONObject loginInfo) {
+        String ret = null;
+        HttpGet httpGet = new HttpGet(url);
+        if(mobileUA)
+            httpGet.setHeader("User-Agent",androidUA);
+        else
+            httpGet.setHeader("User-Agent",PCUA);
+//        CloseableHttpClient httpClient = getHttpClient();
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        try {
+            HttpContext context = new BasicHttpContext();
+            CloseableHttpResponse response = httpClient.execute(httpGet,context);
+            HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(ExecutionContext.HTTP_REQUEST);
+            HttpHost currentHost = (HttpHost) context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+            if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                ret = (currentReq.getURI().isAbsolute()) ? currentReq.getURI().toString() : (currentHost.toURI() + currentReq.getURI());
+            }
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                httpClient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return ret;
+    }
 
     public static String download(String url, String filepath) {
         String ret = filepath;
@@ -282,40 +346,6 @@ public class HttpClientUtil {
         } catch (Exception e) {
             e.printStackTrace();
             ret = null;
-        }
-        return ret;
-    }
-
-    public static String httpGetRedirectFinalUrl(String url){
-        return httpGetRedirectFinalUrl(url,true);
-    }
-    public static String httpGetRedirectFinalUrl(String url, boolean mobileUA) {
-        String ret = null;
-        HttpGet httpGet = new HttpGet(url);
-        if(mobileUA)
-            httpGet.setHeader("User-Agent",androidUA);
-        else
-            httpGet.setHeader("User-Agent",PCUA);
-//        CloseableHttpClient httpClient = getHttpClient();
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        try {
-            HttpContext context = new BasicHttpContext();
-            CloseableHttpResponse response = httpClient.execute(httpGet,context);
-            HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(ExecutionContext.HTTP_REQUEST);
-            HttpHost currentHost = (HttpHost) context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
-            if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                ret = (currentReq.getURI().isAbsolute()) ? currentReq.getURI().toString() : (currentHost.toURI() + currentReq.getURI());
-            }
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                httpClient.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
         return ret;
     }

@@ -33,6 +33,7 @@ public class Feed {
     private int frequency;
     private String tags;
     private String category;
+    private String loginJson;
 
     public Feed() {
     }
