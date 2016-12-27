@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -24,12 +25,14 @@ public class BigDataWay {
     private static Logger logger = LoggerFactory.getLogger(BigDataWay.class);
     @Autowired
     EntityDao entityDao;
+    @Autowired
+    Environment env;
     private static ObjectMapper objectMapper = new ObjectMapper();
     public String postArticle(FeedArticle article){
         String ret = null;
         String body = buildArticlePostBody(article);
         Map<String,Object> headers = new HashMap<>();
-        headers.put("Authorization","Basic YmlnZGF0YXdheTptZWl5b3VtaW1hbWE=");
+        headers.put("Authorization",env.getProperty("article.post.authorization"));
         headers.put("Content-Type","application/hal+json");
         try {
             //logger.info("article body: {}", body);
