@@ -157,7 +157,9 @@ public class BigDataWay {
         _embedded.put("http://www.bigdataway.net/rest/relation/node/article/field_tags",tags);
         root.put("_embedded",_embedded);
 
-        String originUrl = article.getUrl();
+        String originUrl = article.getOriginalUrl();
+        if(StringUtils.trimToNull(originUrl)==null)
+            originUrl = article.getUrl();
         if(originUrl!=null && originUrl.startsWith("http")){
             JSONArray urlArr = new JSONArray();
             JSONObject originUrlNode = new JSONObject();

@@ -7,25 +7,37 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.BrowserCompatHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.*;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
+import javax.net.ssl.SSLContext;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -76,22 +88,47 @@ public class HttpClientUtil {
         if (ret == null) {
             //create new client instance
             try {
-                ret = HttpClients.createDefault();
+                final SSLContext sslcontext = SSLContexts.createSystemDefault ();
+                final X509HostnameVerifier hostnameVerifier = new BrowserCompatHostnameVerifier();
+                final Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
+                        .<ConnectionSocketFactory> create ()
+                        .register ( "http", PlainConnectionSocketFactory.INSTANCE )
+                        .register ( "https", new SSLConnectionSocketFactory( sslcontext, hostnameVerifier ) )
+                        .build ();
+                final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager (
+                        socketFactoryRegistry );
+                CookieStore cookieStore = new BasicCookieStore();
+                // 配置超时时间（连接服务端超时1秒，请求数据返回超时2秒）
+                RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(120000).setSocketTimeout(60000)
+                        .setConnectionRequestTimeout(60000).build();
+                // 设置默认跳转以及存储cookie
+                ret = HttpClientBuilder.create().setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
+                        .setRedirectStrategy(new DefaultRedirectStrategy()).setDefaultRequestConfig(requestConfig)
+                        .setConnectionManager(connectionManager)
+                        .setConnectionManagerShared(true)
+                        .setDefaultCookieStore(cookieStore).build();
                 JSONObject formdata = loginInfo.getJSONObject("formdata");
                 JSONObject headers = loginInfo.getJSONObject("headers");
-
-                if(loginurl.contains("tuicool.com")){
-                    HttpGet httpGet = new HttpGet(loginurl);
-                    CloseableHttpResponse response = ret.execute(httpGet);
-                    String responseText = EntityUtils.toString(response.getEntity());
-
-                }
 
                 Map<String, Object> headersMap = null;
                 Map<String, Object> formdataMap = null;
                 headersMap = objectMapper.readValue(headers.toString(), Map.class);
                 formdataMap = objectMapper.readValue(formdata.toString(), Map.class);
-                ret = HttpClients.createDefault();
+
+                if(loginurl.contains("tuicool.com")){
+                    HttpGet httpGet = new HttpGet(loginurl);
+                    for (Map.Entry<String, Object> param : headersMap.entrySet()) {
+                        System.out.println(param.getKey()+" | "+param.getValue());
+                        httpGet.addHeader(param.getKey(), String.valueOf(param.getValue()));
+                    }
+                    CloseableHttpResponse response = ret.execute(httpGet);
+                    String responseText = EntityUtils.toString(response.getEntity());
+                    Document doc = Jsoup.parse(responseText);
+                    String token = doc.getElementsByAttributeValue("name","csrf-token").get(0).attr("content");
+                    formdata.put("authenticity_token",token);
+                }
+
+
                 //login
                 HttpPost httpPost = new HttpPost(loginurl);
                 for (Map.Entry<String, Object> param : headersMap.entrySet()) {
@@ -301,10 +338,12 @@ public class HttpClientUtil {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            try {
-                httpClient.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if(loginInfo==null) {//don't close for login session.
+                try {
+                    httpClient.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 

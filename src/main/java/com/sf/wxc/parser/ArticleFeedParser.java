@@ -37,7 +37,7 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser{
                 for(int i=ret.size()-1;i>=0;i--){
                     FeedArticle article = ret.get(i);
                     article.transferUrl(feed);
-
+                    System.out.println(article.getUrl());
                     if(article.validateUrlTitle() && !feedArticleDbRepository.existsUrl(article.getUrl()))
                         parseContentPage(feed, article);
                     else
@@ -70,6 +70,7 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser{
         ((FeedArticle) article).setContent(map.get("content")==null?null:map.get("content").toString());
         ((FeedArticle) article).setAuthor(map.get("author")==null?null:map.get("author").toString());
         ((FeedArticle) article).setTags(map.get("tags")==null?null:map.get("tags").toString());
+        ((FeedArticle) article).setOriginalUrl(map.get("originalUrl")==null?null:map.get("originalUrl").toString());
 
         return (FeedArticle) article;
     }

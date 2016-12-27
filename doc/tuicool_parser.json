@@ -12,6 +12,7 @@
   "contentjson": {
     "content": "html:.//div[@class='article_body']/div[1]",
     "author": "text:.//span[@class='from']/a[1]",
+    "originalUrl": "text:.//div[@class='source']/a[1]",
     "tags": "text:.//div[@class='article_meta']//span[@class='new-label']"
   }
 }

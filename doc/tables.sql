@@ -46,6 +46,9 @@ INSERT INTO `feed` (`name`, `url`, `domain`, `listJhql`, `contentJhql`, `parserC
 INSERT INTO `feed` (`name`, `url`, `domain`, `listJhql`, `contentJhql`, `parserClass`, `entityClass`, `contentPagePreUrl`, `contentPageRedirect`, `listPageMobile`, `contentPageMobile`, `frequency`, `tags`, `category`) VALUES('dashuju_toutiao','http://m.toutiao.com/search/?keyword=大数据&count=30','toutiao.com','{\"articles\":{\"_type\":\"list\",\"from\":\".//div[@class=\'list_content\']/section\",\"select\":{\"title\":\"text:.//h3\",\"url\":\"text:./a[1]/@href\"}}}','{\"content\":\"html:.//div[@class=\'article-content\']\",\"author\":\"text:.//div[@class=\'articleInfo\']/span[@class=\'src\']\",\"tags\":\"text:.//a[@class=\'label-link\']\"}','com.sf.wxc.parser.ArticleFeedParser','com.sf.wxc.beans.FeedArticle','http://www.toutiao.com','1','1','0','1','大数据','news_bigdata');
 INSERT INTO `feed` (`name`, `url`, `domain`, `listJhql`, `contentJhql`, `parserClass`, `entityClass`, `contentPagePreUrl`, `contentPageRedirect`, `listPageMobile`, `contentPageMobile`, `frequency`, `tags`, `category`) VALUES('shujuwajue_toutiao','http://m.toutiao.com/search/?keyword=数据挖掘&count=20','toutiao.com','{\"articles\":{\"_type\":\"list\",\"from\":\".//div[@class=\'list_content\']/section\",\"select\":{\"title\":\"text:.//h3\",\"url\":\"text:./a[1]/@href\"}}}','{\"content\":\"html:.//div[@class=\'article-content\']\",\"author\":\"text:.//div[@class=\'articleInfo\']/span[@class=\'src\']\",\"tags\":\"text:.//a[@class=\'label-link\']\"}','com.sf.wxc.parser.ArticleFeedParser','com.sf.wxc.beans.FeedArticle','http://www.toutiao.com','1','1','0','1','数据挖掘','news_bigdata');
 
+# tuicool search
+INSERT INTO `feed` (`name`, `url`, `domain`, `listJhql`, `contentJhql`, `parserClass`, `entityClass`, `contentPagePreUrl`, `contentPageRedirect`, `listPageMobile`, `contentPageMobile`, `frequency`, `tags`, `category`, `loginJson`) VALUES('tensorflow_tuicool','http://www.tuicool.com/search?kw=tensorflow','tuicool.com','{"articles":{"_type":"list","from":".//div[@class=''list_article'']/div[@class=''single_fake'']","select":{"title":"text:.//a[@class=''article-list-title'']","url":"text:.//a[@class=''article-list-title'']/@href"}}}','{"content":"html:.//div[@class=''article_body'']/div[1]","author":"text:.//span[@class=''from'']/a[1]","originalUrl":"text:.//div[@class=''source'']/a[1]","tags":"text:.//div[@class=''article_meta'']//span[@class=''new-label'']"}','com.sf.wxc.parser.ArticleFeedParser','com.sf.wxc.beans.FeedArticle','http://www.tuicool.com','0','0','0','1','tensorflow','machinelearning','{"loginurl":"http://www.tuicool.com/login","formdata":{"utf8":"✓","authenticity_token":"5vg/Z5gF6fAL2cgHONRAHjIqI2PG8zxjB5H5AzpwLOk=","email":"jiqixuexinlp@gmail.com","password":"meiyoumima","remember":"1"},"headers":{"Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8","Accept-Encoding":"gzip, deflate","Accept-Language":"zh-CN,zh;q=0.8,en;q=0.6","Cache-Control":"max-age=0","Connection":"keep-alive","Content-Type":"application/x-www-form-urlencoded","Host":"www.tuicool.com","Origin":"http://www.tuicool.com","Referer":"http://www.tuicool.com/login","Upgrade-Insecure-Requests":"1","User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36"}}');
+
 DROP TABLE IF EXISTS article;
 CREATE TABLE `article` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -53,6 +56,7 @@ CREATE TABLE `article` (
   `domain` varchar(64) NOT NULL,
   `title` varchar(256) NOT NULL,
   `url` varchar(256) NOT NULL,
+  `originalUrl` varchar(256) DEFAULT NULL,
   `thumbnailUrl` varchar(256) DEFAULT NULL,
   `description` varchar(1024) DEFAULT NULL,
   `content` TEXT NOT NULL,
@@ -66,7 +70,7 @@ CREATE TABLE `article` (
   UNIQUE KEY `article_field__title__value` (`title`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='The base table for article entities.'
 
-
+alter table article add COLUMN `originalUrl` varchar(256) DEFAULT NULL
   SELECT * FROM taxonomy_term_field_data a, taxonomy_term_data b WHERE a.vid='category' AND a.tid=b.tid
 
 

@@ -23,6 +23,7 @@ public class FeedArticle {
     private String domain;
     private String title;
     private String url;
+    private String originalUrl;
     private String thumbnailUrl;
     private String description;
     private String content;
