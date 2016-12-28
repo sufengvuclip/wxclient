@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
 
 
 public class HttpClientUtil {
-    private static Cache<String, CloseableHttpClient> loginClientCache = CacheBuilder.newBuilder().expireAfterWrite(180, TimeUnit.MINUTES).build();
+    private static Cache<String, CloseableHttpClient> loginClientCache = CacheBuilder.newBuilder().expireAfterWrite(120, TimeUnit.MINUTES).build();
     final static int BUFFER_SIZE = 1024;
     final static String androidUA = "Mozilla/5.0 (Linux; U; Android 4.4.4; zh-CN; MI 3W Build/KTU84P) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 UCBrowser/10.0.0.488 U3/0.8.0 Mobile Safari/534.30";
     final static String PCUA = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36";
