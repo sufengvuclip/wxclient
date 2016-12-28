@@ -12,6 +12,7 @@ CREATE TABLE `feed` (
   `contentPageRedirect` BOOLEAN,
   `listPageMobile` BOOLEAN,
   `contentPageMobile` BOOLEAN,
+  `active` BOOLEAN DEFAULT TRUE,
   `frequency` int(10) unsigned DEFAULT 1,
   `tags` varchar(256) DEFAULT NULL,
   `category` varchar(256) DEFAULT NULL,
@@ -22,6 +23,7 @@ CREATE TABLE `feed` (
 
 alter table feed add COLUMN `loginJson` varchar(1024) DEFAULT NULL;
 alter table feed add COLUMN `imgProxy` BOOLEAN DEFAULT FALSE;
+alter table feed add COLUMN `active` BOOLEAN DEFAULT TRUE;
 
 # toutaio
 insert into `feed` (`id`, `name`, `url`, `domain`, `listJhql`, `contentJhql`, `parserClass`, `entityClass`, `contentPagePreUrl`, `contentPageRedirect`, `listPageMobile`, `contentPageMobile`, `frequency`, `tags`, `category`) values('1','tensorflow_toutiao','http://m.toutiao.com/search/?keyword=tensorflow&count=20','toutiao.com','{\"articles\":{\"_type\":\"list\",\"from\":\".//div[@class=\'list_content\']/section\",\"select\":{\"title\":\"text:.//h3\",\"url\":\"text:./a[1]/@href\"}}}','{\"content\":\"html:.//div[@class=\'article-content\']\",\"author\":\"text:.//div[@class=\'articleInfo\']/span[@class=\'src\']\",\"tags\":\"text:.//a[@class=\'label-link\']\"}','com.sf.wxc.parser.ArticleFeedParser','com.sf.wxc.beans.FeedArticle','http://www.toutiao.com','1','1','0','1','tensorflow','news_machinelearning');

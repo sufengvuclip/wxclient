@@ -37,6 +37,7 @@ public class Feed {
     private String category;
     private String loginJson;
     private Boolean imgProxy;
+    private Boolean active;
 
     public Feed() {
     }

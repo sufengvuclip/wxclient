@@ -86,11 +86,13 @@ public class WxclientApplicationTests {
 				"      }\n" +
 				"    }\n" +
 				"  }";
-		String contentHql = "{\n" +
+		/*String contentHql = "{\n" +
 				"    \"content\": \"html:.//div[@class='article_body']\",\n" +
 				"    \"author\": \"text:.//span[@class='from']/a[1]\",\n" +
 				"    \"tags\": \"text:.//div[@class='article_meta']//span[@class='new-label']\"\n" +
-				"  }";
+				"  }";*/
+
+        String contentHql = "{\"content\":\"html:.//div[@class='article_body']\",\"author\":\"text:.//span[@class='from']/a[1]\",\"originalUrl\":\"text:.//div[@class='source']/a[1]\",\"tags\":\"text:.//div[@class='article_meta']//span[@class='new-label']\"}";
 		String loginJson = "{\n" +
 				"  \"loginurl\": \"http://www.tuicool.com/login\",\n" +
 				"  \"formdata\":{\n" +
@@ -114,8 +116,8 @@ public class WxclientApplicationTests {
 				"    \"User-Agent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36\"\n" +
 				"  }\n" +
 				"}";
-		Feed feed = new Feed(0,"test","http://www.tuicool.com/search?kw=Paddle8：艺术品在线拍卖行",
-				"tuicool.com",listHql,contentHql,"com.sf.wxc.parser.ArticleFeedParser","com.sf.wxc.beans.FeedArticle",false,"http://www.tuicool.com",false,false,1,"machinelearning","news_machinelearning",loginJson,true);
+		Feed feed = new Feed(0,"test","http://www.tuicool.com/search?kw=万亿user_tags级实时推荐系统数据库设计",
+				"tuicool.com",listHql,contentHql,"com.sf.wxc.parser.ArticleFeedParser","com.sf.wxc.beans.FeedArticle",false,"http://www.tuicool.com",false,false,1,"machinelearning","news_machinelearning",loginJson,true,true);
 		Class clazz = Class.forName(feed.getParserClass());
 		BaseParser parser = (BaseParser) clazz.newInstance();
 		List<?> list = parser.parseListPage(feed);

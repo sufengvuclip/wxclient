@@ -70,16 +70,15 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser{
 
     @Override
     public FeedArticle parseContentPage(Feed feed, Object article) {
-        if(StringUtils.trimToNull(feed.getContentPagePreUrl())!=null && !StringUtils.trimToEmpty(((FeedArticle) article).getUrl()).startsWith("http")){
-            String articleUrl = feed.getContentPagePreUrl()+((FeedArticle) article).getUrl();
-            ((FeedArticle) article).setUrl(articleUrl);
-        }
         String contentUrl = ((FeedArticle) article).getUrl();
         if(feed.getContentPageRedirect()){
             contentUrl = HttpClientUtil.httpGetRedirectFinalUrl(contentUrl, feed.getContentPageMobile(),feed.getLoginJsonObject());
         }
 
         String doc = HttpClientUtil.httpGetRequest(contentUrl, feed.getContentPageMobile(),feed.getLoginJsonObject());
+        logger.info("=================================================");
+        logger.info("url {} content {}",contentUrl,doc);
+        logger.info("=================================================");
         Object obj = parse(doc, feed.getContentJhql());
         LinkedHashMap<String, Object> map = (LinkedHashMap) obj;
         ((FeedArticle) article).setDomain(feed.getDomain());
