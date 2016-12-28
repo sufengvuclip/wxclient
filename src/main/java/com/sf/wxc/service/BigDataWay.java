@@ -32,7 +32,7 @@ public class BigDataWay {
         String ret = null;
         String body = buildArticlePostBody(article);
         Map<String,Object> headers = new HashMap<>();
-        headers.put("Authorization",env.getProperty("article.post.authorization"));
+        headers.put("Authorization",/*env.getProperty("article.post.authorization")*/"Basic YmlnZGF0YXdheTptZWl5b3VtaW1hbWE=");
         headers.put("Content-Type","application/hal+json");
         try {
             //logger.info("article body: {}", body);
@@ -65,7 +65,7 @@ public class BigDataWay {
     public String addTag(String tag){
         String ret = null;
         Map<String,Object> headers = new HashMap<>();
-        headers.put("Authorization",env.getProperty("article.post.authorization"));
+        headers.put("Authorization",/*env.getProperty("article.post.authorization")*/"Basic YmlnZGF0YXdheTptZWl5b3VtaW1hbWE="
         headers.put("Content-Type","application/hal+json");
         String body = DrupalConstant.tagPostContent.replaceAll("###tag###",tag.trim());
         try {
