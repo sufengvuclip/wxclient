@@ -45,15 +45,17 @@ public class FeedScheduler {
                     entityClazz = Class.forName(feed.getEntityClass());
                     BaseParser parser = (BaseParser) parserClazz.newInstance();
                     List<?> list = parser.parseListPage(feed);
-                    for (Object o : list) {
-                        if(entityClazz.equals(FeedArticle.class)) {
-                            if(((FeedArticle)o).validated()) {
-                                try {
-                                    feedArticleDbRepository.save((FeedArticle) o);
-                                    logger.info("insert article {} {}",((FeedArticle)o).getTitle(),((FeedArticle)o).getUrl());
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    logger.error("insert article error {} {}",((FeedArticle)o).getTitle(),((FeedArticle)o).getUrl());
+                    if(list!=null && list.size()>0) {
+                        for (Object o : list) {
+                            if (entityClazz.equals(FeedArticle.class)) {
+                                if (((FeedArticle) o).validated()) {
+                                    try {
+                                        feedArticleDbRepository.save((FeedArticle) o);
+                                        logger.info("insert article {} {}", ((FeedArticle) o).getTitle(), ((FeedArticle) o).getUrl());
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        logger.error("insert article error {} {}", ((FeedArticle) o).getTitle(), ((FeedArticle) o).getUrl());
+                                    }
                                 }
                             }
                         }

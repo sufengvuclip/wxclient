@@ -13,6 +13,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -24,6 +26,7 @@ import java.util.List;
  * Created by Su Feng on 2016/12/22.
  */
 public class ArticleFeedParser extends JHQLParser implements BaseParser{
+    private static Logger logger = LoggerFactory.getLogger(ArticleFeedParser.class);
     static ObjectMapper objectMapper = new ObjectMapper();
     static JavaType javaType = objectMapper.getTypeFactory().constructParametricType(List.class, FeedArticle.class);
     FeedArticleDbRepository feedArticleDbRepository = SpringUtil.getBean(FeedArticleDbRepository.class);
@@ -36,6 +39,10 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser{
 
         LinkedHashMap<String, List> map = (LinkedHashMap) obj;
         List list = map.get("articles");
+        if(list==null || list.size()==0){
+            logger.error("####Feed parsing no result {} {}",feed.getId(),feed.getUrl());
+            return null;
+        }
         JSONArray arry = new JSONArray(list);
         try {
             ret =  (List<FeedArticle>)objectMapper.readValue(arry.toString(), javaType);
@@ -44,10 +51,13 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser{
                     FeedArticle article = ret.get(i);
                     article.transferUrl(feed);
                     System.out.println(article.getUrl());
-                    if(article.validateUrlTitle() && !feedArticleDbRepository.existsUrl(article.getUrl()))
+                    if(article.validateUrlTitle() && !feedArticleDbRepository.existsUrl(article.getUrl())) {
+                        logger.info("   parseListPage new article {} {}",article.getTitle(),article.getUrl());
                         parseContentPage(feed, article);
-                    else
+                    }else {
+                        logger.info("   parseListPage old article {} {}",article.getTitle(),article.getUrl());
                         ret.remove(i);
+                    }
                 }
             }
         } catch (IOException e) {
