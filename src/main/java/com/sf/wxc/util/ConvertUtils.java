@@ -1,6 +1,7 @@
 package com.sf.wxc.util;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.xpath.operations.Bool;
 
 import java.math.BigInteger;
 import java.sql.Date;
@@ -13,6 +14,8 @@ public class ConvertUtils {
         //System.out.println("convert: value "+value+" class "+clazz.getName());
         if(clazz.equals(String.class))
             return String.valueOf(value);
+        if(clazz.equals(Boolean.class) || "boolean".equals(clazz.getName()))
+            return (NumberUtils.toInt(String.valueOf(value),0)>0);
         if(clazz.equals(Integer.class) || "int".equals(clazz.getName()))
             return NumberUtils.toInt(String.valueOf(value),0);
         if(clazz.equals(Long.class) || "long".equals(clazz.getName()))

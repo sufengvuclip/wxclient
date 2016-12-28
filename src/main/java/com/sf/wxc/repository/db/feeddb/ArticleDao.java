@@ -1,5 +1,6 @@
 package com.sf.wxc.repository.db.feeddb;
 
+import com.sf.wxc.beans.Feed;
 import com.sf.wxc.beans.FeedArticle;
 import org.springframework.stereotype.Repository;
 
@@ -18,5 +19,12 @@ public class ArticleDao extends FeeddbCommonDao{
         params.put("id",startId);
         params.put("limit",limit);
         return (List<FeedArticle>) queryListEntity(sql,params,FeedArticle.class);
+    }
+
+    public List<Feed> queryFeed(boolean active){
+        String sql = "select a.* from feed a where a.active=:active";
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("active",active?1:0);
+        return (List<Feed>) queryListEntity(sql,params,Feed.class);
     }
 }

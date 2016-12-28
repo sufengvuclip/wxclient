@@ -3,12 +3,12 @@ package com.sf.wxc.schedule;
 import com.sf.wxc.beans.Feed;
 import com.sf.wxc.beans.FeedArticle;
 import com.sf.wxc.parser.BaseParser;
+import com.sf.wxc.repository.db.feeddb.ArticleDao;
 import com.sf.wxc.repository.db.feeddb.FeedArticleDbRepository;
 import com.sf.wxc.repository.db.feeddb.FeedDbRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +25,8 @@ public class FeedScheduler {
     FeedDbRepository feedDbRepository;
     @Autowired
     FeedArticleDbRepository feedArticleDbRepository;
+    @Autowired
+    ArticleDao articleDao;
 
     /**
      * every 1 hour run.
@@ -34,7 +36,7 @@ public class FeedScheduler {
         logger.info("start parse feeds....");
 
         //Sort sort = new Sort(Sort.Direction.ASC, "id");
-        List<Feed> feeds = (List<Feed>) feedDbRepository.findByActiveTrue();
+        List<Feed> feeds =  articleDao.queryFeed(true);
         if (feeds != null && feeds.size() > 0) {
             for (Feed feed : feeds) {
                 logger.info("parsing feed {}",feed.toString());
