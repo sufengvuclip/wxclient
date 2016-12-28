@@ -42,6 +42,8 @@ public class DrupalConstant {
         categoryUuidMap.put("news_machinelearning","423f1f06-24ee-40bd-ad86-cb2e66ded42f");
         categoryUuidMap.put("bigdata","4f4ba301-417f-4f96-8286-85efa992cda7");
         categoryUuidMap.put("news_bigdata","3ff4e202-9848-4470-b251-546be1472529");
+        categoryUuidMap.put("recommendation","4c6b0f4a-78d8-45c7-a2f6-a9abaac7e985");
+        categoryUuidMap.put("news_recommendation","998b99d3-b149-45ed-b969-f8312b8b18ba");
     }
 
     /**
