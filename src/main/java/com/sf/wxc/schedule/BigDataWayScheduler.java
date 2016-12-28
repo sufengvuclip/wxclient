@@ -65,8 +65,8 @@ public class BigDataWayScheduler {
                         }
                     }else{
                         error++;
-                        if(error>=20){
-                            logger.error("post article error time over 20, break");
+                        if(error>=5){
+                            logger.error("post article error time over 5, break");
                             break;
                         }
                     }

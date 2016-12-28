@@ -103,9 +103,13 @@ CREATE TABLE `article` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `article_field__url__value` (`url`),
   UNIQUE KEY `article_field__title__value` (`title`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='The base table for article entities.'
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='The base table for article entities.';
 
 alter table article add COLUMN `originalUrl` varchar(256) DEFAULT NULL;
   SELECT * FROM taxonomy_term_field_data a, taxonomy_term_data b WHERE a.vid='category' AND a.tid=b.tid;
+
+
+select * from article where title='推荐系统之眼';
+select * from article order by id desc limit 10;
 
 

@@ -30,6 +30,7 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser{
     static ObjectMapper objectMapper = new ObjectMapper();
     static JavaType javaType = objectMapper.getTypeFactory().constructParametricType(List.class, FeedArticle.class);
     FeedArticleDbRepository feedArticleDbRepository = SpringUtil.getBean(FeedArticleDbRepository.class);
+    static final int summaryLength = 400;
     @Override
     public List<FeedArticle> parseListPage(Feed feed) {
         List<FeedArticle> ret = null;
@@ -62,6 +63,7 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser{
             }
         } catch (IOException e) {
             e.printStackTrace();
+            logger.error("####parse list page error {}",feed.getUrl());
         }
         return ret;
     }
@@ -87,6 +89,11 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser{
         ((FeedArticle) article).setAuthor(map.get("author")==null?null:map.get("author").toString());
         ((FeedArticle) article).setTags(map.get("tags")==null?null:map.get("tags").toString());
         ((FeedArticle) article).setOriginalUrl(map.get("originalUrl")==null?null:map.get("originalUrl").toString());
+
+        //set summary
+        if(StringUtils.trimToNull(((FeedArticle) article).getDescription())==null){
+            ((FeedArticle) article).setDescription(generateSummary(((FeedArticle) article).getContent(),summaryLength));
+        }
 
 
         //replace the img source with proxy in content
@@ -114,5 +121,12 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser{
         }
 
         return (FeedArticle) article;
+    }
+
+    public String generateSummary(String content, int length){
+        Document doc = Jsoup.parse(content,"utf-8");
+        String text = doc.body().text();
+        int index = Math.min(length,text.length());
+        return text.substring(0,index);
     }
 }
