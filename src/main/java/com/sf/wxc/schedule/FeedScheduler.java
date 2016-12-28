@@ -33,8 +33,8 @@ public class FeedScheduler {
     public void parseFeeds() {
         logger.info("start parse feeds....");
 
-        Sort sort = new Sort(Sort.Direction.ASC, "id");
-        List<Feed> feeds = (List<Feed>) feedDbRepository.findByActive(true,sort);
+        //Sort sort = new Sort(Sort.Direction.ASC, "id");
+        List<Feed> feeds = (List<Feed>) feedDbRepository.findByActiveTrue();
         if (feeds != null && feeds.size() > 0) {
             for (Feed feed : feeds) {
                 logger.info("parsing feed {}",feed.toString());

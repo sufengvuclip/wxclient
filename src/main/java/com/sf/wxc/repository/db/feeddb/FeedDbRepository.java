@@ -2,7 +2,6 @@ package com.sf.wxc.repository.db.feeddb;
 
 import com.sf.wxc.beans.Feed;
 import org.hibernate.mapping.List;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,5 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface FeedDbRepository extends JpaRepository<Feed, Integer> {
-    public List findByActive(Boolean active,Sort sort);
+    public List findByActiveTrue();
 }
