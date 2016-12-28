@@ -161,8 +161,9 @@ public class BigDataWay {
         root.put("_embedded",_embedded);
 
         String originUrl = article.getOriginalUrl();
-        if(StringUtils.trimToNull(originUrl)==null)
+        if(StringUtils.trimToNull(originUrl)==null) {
             originUrl = article.getUrl();
+        }
         if(originUrl!=null && originUrl.startsWith("http")){
             JSONArray urlArr = new JSONArray();
             JSONObject originUrlNode = new JSONObject();
