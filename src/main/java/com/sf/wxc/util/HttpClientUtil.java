@@ -160,7 +160,7 @@ public class HttpClientUtil {
                 httpPost.setEntity(new UrlEncodedFormEntity(pairs, UTF_8));
 
                 InetSocketAddress socksaddr = new InetSocketAddress("127.0.0.1", 9050);
-                logger.info("=====new socksaddr {}",socksaddr==null?"null":socksaddr.getHostString());
+                logger.error("=====new socksaddr {}",socksaddr==null?"null":socksaddr.getHostString());
                 HttpClientContext context = HttpClientContext.create();
                 context.setAttribute("socks.address", socksaddr);
 
