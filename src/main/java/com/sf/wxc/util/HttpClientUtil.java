@@ -161,8 +161,11 @@ public class HttpClientUtil {
 
                 ret.execute(httpGet,context);
             } catch (Exception e) {
-                e.printStackTrace();
-                logger.error(e.getMessage());
+                //e.printStackTrace();
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw, true));
+                String str = sw.toString();
+                logger.error(str);
                 ret = null;
             }
         }
