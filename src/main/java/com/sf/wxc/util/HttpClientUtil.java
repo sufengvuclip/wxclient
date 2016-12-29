@@ -34,6 +34,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
 import java.io.*;
@@ -45,6 +47,7 @@ import java.util.concurrent.TimeUnit;
 
 
 public class HttpClientUtil {
+    private static Logger logger = LoggerFactory.getLogger(HttpClientUtil.class);
     private static Cache<String, CloseableHttpClient> loginClientCache = CacheBuilder.newBuilder().expireAfterWrite(120, TimeUnit.MINUTES).build();
     final static int BUFFER_SIZE = 1024;
     final static String androidUA = "Mozilla/5.0 (Linux; U; Android 4.4.4; zh-CN; MI 3W Build/KTU84P) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 UCBrowser/10.0.0.488 U3/0.8.0 Mobile Safari/534.30";
@@ -144,6 +147,7 @@ public class HttpClientUtil {
                 ret.execute(httpPost);
             } catch (Exception e) {
                 e.printStackTrace();
+                logger.error(e.getMessage());
                 ret = null;
             }
         }

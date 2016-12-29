@@ -25,12 +25,12 @@ import java.net.InetSocketAddress;
 @RequestMapping("/test")
 public class TestController {
     @RequestMapping("/tor")
-    public ResponseEntity<?> namedEntity(@RequestParam(value = "url", required = true) String url) {
+    public ResponseEntity<?> tor(@RequestParam(value = "url", required = true) String url) {
         if (StringUtils.trimToNull(url) == null)
             return new ResponseEntity<String>("invalidate parameter!", HttpStatus.FORBIDDEN);
 
         JSONObject login = new JSONObject(loginJson);
-        CloseableHttpClient client = HttpClientUtil.getHttpClient(login,false);
+        CloseableHttpClient client = HttpClientUtil.getHttpClient(login,true);
         InetSocketAddress socksaddr = new InetSocketAddress("127.0.0.1",
                 9050);
         HttpClientContext context = HttpClientContext.create();
