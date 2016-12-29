@@ -15,6 +15,7 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.DnsResolver;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.ssl.BrowserCompatHostnameVerifier;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
@@ -40,8 +41,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
 import java.io.*;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -104,8 +107,10 @@ public class HttpClientUtil {
 //                        .register ( "https", new SSLConnectionSocketFactory( sslcontext, hostnameVerifier ) )
                         .register ( "https", new MyConnectionSocketFactory(SSLContexts.createSystemDefault()))
                         .build ();
+                /*final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager (
+                        socketFactoryRegistry );*/
                 final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager (
-                        socketFactoryRegistry );
+                        socketFactoryRegistry ,new FakeDnsResolver());
                 CookieStore cookieStore = new BasicCookieStore();
                 // 配置超时时间（连接服务端超时1秒，请求数据返回超时2秒）
                 RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(120000).setSocketTimeout(60000)
@@ -160,6 +165,14 @@ public class HttpClientUtil {
         }
         if(ret!=null) loginClientCache.put(loginurl,ret);
         return ret;
+    }
+
+    static class FakeDnsResolver implements DnsResolver {
+        @Override
+        public InetAddress[] resolve(String host) throws UnknownHostException {
+            // Return some fake DNS record for every request, we won't be using it
+            return new InetAddress[] { InetAddress.getByAddress(new byte[] { 1, 1, 1, 1 }) };
+        }
     }
 
 
