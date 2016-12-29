@@ -13,6 +13,7 @@ import java.net.Socket;
  */
 public class MyPlainConnectionSocketFactory extends PlainConnectionSocketFactory {
     public MyPlainConnectionSocketFactory() {
+        super();
     }
 
     @Override
