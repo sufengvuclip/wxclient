@@ -97,7 +97,8 @@ public class HttpClientUtil {
                 final Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
                         .<ConnectionSocketFactory> create ()
                         .register ( "http", PlainConnectionSocketFactory.INSTANCE )
-                        .register ( "https", new SSLConnectionSocketFactory( sslcontext, hostnameVerifier ) )
+//                        .register ( "https", new SSLConnectionSocketFactory( sslcontext, hostnameVerifier ) )
+                        .register ( "https", new MyConnectionSocketFactory(SSLContexts.createSystemDefault()))
                         .build ();
                 final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager (
                         socketFactoryRegistry );
