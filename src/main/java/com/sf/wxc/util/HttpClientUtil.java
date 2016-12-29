@@ -15,9 +15,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.BrowserCompatHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -96,7 +94,8 @@ public class HttpClientUtil {
                 final X509HostnameVerifier hostnameVerifier = new BrowserCompatHostnameVerifier();
                 final Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
                         .<ConnectionSocketFactory> create ()
-                        .register ( "http", PlainConnectionSocketFactory.INSTANCE )
+//                        .register ( "http", PlainConnectionSocketFactory.INSTANCE )
+                        .register ( "http", new MyPlainConnectionSocketFactory() )
 //                        .register ( "https", new SSLConnectionSocketFactory( sslcontext, hostnameVerifier ) )
                         .register ( "https", new MyConnectionSocketFactory(SSLContexts.createSystemDefault()))
                         .build ();
