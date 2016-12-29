@@ -24,7 +24,9 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.*;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
@@ -41,10 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
 import java.io.*;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -98,6 +97,13 @@ public class HttpClientUtil {
         if (ret == null) {
             //create new client instance
             try {
+                Authenticator.setDefault(new Authenticator(){
+                    protected  PasswordAuthentication  getPasswordAuthentication(){
+                        PasswordAuthentication p=new PasswordAuthentication("", "".toCharArray());
+                        return p;
+                    }
+                });
+
                 final SSLContext sslcontext = SSLContexts.createSystemDefault ();
                 final X509HostnameVerifier hostnameVerifier = new BrowserCompatHostnameVerifier();
                 final Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
@@ -154,6 +160,7 @@ public class HttpClientUtil {
                 httpPost.setEntity(new UrlEncodedFormEntity(pairs, UTF_8));
 
                 InetSocketAddress socksaddr = new InetSocketAddress("127.0.0.1", 9050);
+                logger.info("=====new socksaddr {}",socksaddr==null?"null":socksaddr.getHostString());
                 HttpClientContext context = HttpClientContext.create();
                 context.setAttribute("socks.address", socksaddr);
 
