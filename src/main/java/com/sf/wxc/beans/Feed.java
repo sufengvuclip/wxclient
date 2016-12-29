@@ -43,7 +43,7 @@ public class Feed {
     }
 
     public JSONObject getLoginJsonObject(){
-        if(StringUtils.trimToNull(loginJson)==null) return null;
+        if(StringUtils.trimToNull(loginJson)==null || "null".equalsIgnoreCase(StringUtils.trimToNull(loginJson))) return null;
         return new JSONObject(loginJson);
     }
 }
