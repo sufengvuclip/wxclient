@@ -43,8 +43,10 @@ public class TestController {
         HttpClientContext context = HttpClientContext.create();
         context.setAttribute("socks.address", socksaddr);
         HttpGet httpGet = new HttpGet(url);
-        for (Map.Entry<String, Object> param : headersMap.entrySet()) {
-            httpGet.addHeader(param.getKey(), String.valueOf(param.getValue()));
+        if(url.contains("tuicool.com")) {
+            for (Map.Entry<String, Object> param : headersMap.entrySet()) {
+                httpGet.addHeader(param.getKey(), String.valueOf(param.getValue()));
+            }
         }
         CloseableHttpResponse response = null;
         String result = null;
