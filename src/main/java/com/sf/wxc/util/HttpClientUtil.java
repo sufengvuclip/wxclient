@@ -131,12 +131,12 @@ public class HttpClientUtil {
                 RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(120000).setSocketTimeout(60000)
                         .setConnectionRequestTimeout(60000).build();
                 // 设置默认跳转以及存储cookie
-                ret = HttpClientBuilder.create().setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
+                /*ret = HttpClientBuilder.create().setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
                         .setRedirectStrategy(new DefaultRedirectStrategy()).setDefaultRequestConfig(requestConfig)
                         .setConnectionManager(connectionManager)
                         .setConnectionManagerShared(true)
-                        .setDefaultCookieStore(cookieStore).build();
-                //ret = HttpClients.custom().setConnectionManager(connectionManager).build();
+                        .setDefaultCookieStore(cookieStore).build();*/
+                ret = HttpClients.custom().setConnectionManager(connectionManager).build();
                 JSONObject formdata = loginInfo.getJSONObject("formdata");
                 JSONObject headers = loginInfo.getJSONObject("headers");
 
