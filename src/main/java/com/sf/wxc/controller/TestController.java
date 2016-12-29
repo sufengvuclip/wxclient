@@ -1,5 +1,6 @@
 package com.sf.wxc.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sf.wxc.util.HttpClientUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016-12-17.
@@ -26,24 +28,32 @@ import java.net.InetSocketAddress;
 @RequestMapping("/test")
 public class TestController {
     @RequestMapping("/tor")
-    public ResponseEntity<?> tor(@RequestParam(value = "url", required = true) String url) {
+    public ResponseEntity<?> tor(@RequestParam(value = "url", required = true) String url) throws IOException {
         if (StringUtils.trimToNull(url) == null)
             return new ResponseEntity<String>("invalidate parameter!", HttpStatus.FORBIDDEN);
-
+        ObjectMapper objectMapper = new ObjectMapper();
         JSONObject login = new JSONObject(loginJson);
+
+        JSONObject headers = login.getJSONObject("headers");
+        Map<String, Object> headersMap = null;
+        headersMap = objectMapper.readValue(headers.toString(), Map.class);
+
         CloseableHttpClient client = HttpClientUtil.getHttpClient(login,true);
         InetSocketAddress socksaddr = new InetSocketAddress("127.0.0.1", 9050);
         HttpClientContext context = HttpClientContext.create();
         context.setAttribute("socks.address", socksaddr);
         HttpGet httpGet = new HttpGet(url);
+        for (Map.Entry<String, Object> param : headersMap.entrySet()) {
+            httpGet.addHeader(param.getKey(), String.valueOf(param.getValue()));
+        }
         CloseableHttpResponse response = null;
         String result = null;
         try {
             response =client.execute(httpGet,context);
             HttpEntity entity = response.getEntity();
             result = EntityUtils.toString(entity);
-            Header[] headers = response.getAllHeaders();
-            for(Header h:headers)
+            Header[] headers2 = response.getAllHeaders();
+            for(Header h:headers2)
             result += (h.getName()+":"+h.getValue());
         } catch (IOException e) {
             e.printStackTrace();
