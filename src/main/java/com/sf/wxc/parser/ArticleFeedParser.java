@@ -35,7 +35,11 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser{
     public List<FeedArticle> parseListPage(Feed feed) {
         List<FeedArticle> ret = null;
 
-        String doc = HttpClientUtil.httpGetRequest(feed.getUrl(),feed.getListPageMobile(),feed.getLoginJsonObject());
+        String doc = null;
+        if(feed.getDomain().contains("tuicool.com"))
+            doc = HttpClientUtil.httpGetRequest(feed.getUrl(), feed.getContentPageMobile(),feed.getLoginJsonObject(),true);
+        else
+            doc = HttpClientUtil.httpGetRequest(feed.getUrl(), feed.getContentPageMobile(),feed.getLoginJsonObject(),false);
         Object obj = parse(doc, feed.getListJhql());
 
         LinkedHashMap<String, List> map = (LinkedHashMap) obj;
@@ -75,7 +79,11 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser{
             contentUrl = HttpClientUtil.httpGetRedirectFinalUrl(contentUrl, feed.getContentPageMobile(),feed.getLoginJsonObject());
         }
 
-        String doc = HttpClientUtil.httpGetRequest(contentUrl, feed.getContentPageMobile(),feed.getLoginJsonObject());
+        String doc = null;
+        if(feed.getDomain().contains("tuicool.com"))
+            doc = HttpClientUtil.httpGetRequest(contentUrl, feed.getContentPageMobile(),feed.getLoginJsonObject(),true);
+        else
+            doc = HttpClientUtil.httpGetRequest(contentUrl, feed.getContentPageMobile(),feed.getLoginJsonObject(),false);
         logger.info("=================================================");
         logger.info("url {} content {}",contentUrl,doc);
         logger.info("=================================================");

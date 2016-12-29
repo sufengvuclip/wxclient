@@ -36,7 +36,7 @@ public class BigDataWay {
         headers.put("Content-Type","application/hal+json");
         try {
             //logger.info("article body: {}", body);
-            String response = HttpClientUtil.httpPostRequest(DrupalConstant.articlePostUrl,body,headers,false,null);
+            String response = HttpClientUtil.httpPostRequest(DrupalConstant.articlePostUrl,body,headers,false,null,false);
             //logger.info("article post response: {}",response);
             JSONObject root = new JSONObject(response);
             ret = root.getJSONArray("nid").getJSONObject(0).getString("value");
@@ -69,7 +69,7 @@ public class BigDataWay {
         headers.put("Content-Type","application/hal+json");
         String body = DrupalConstant.tagPostContent.replaceAll("###tag###",tag.trim());
         try {
-            String response = HttpClientUtil.httpPostRequest(DrupalConstant.tagPostUrl,body,headers,false,null);
+            String response = HttpClientUtil.httpPostRequest(DrupalConstant.tagPostUrl,body,headers,false,null,false);
             JSONObject root = new JSONObject(response);
             JSONArray arr = (JSONArray) root.get("uuid");
             ret = arr.getJSONObject(0).getString("value");

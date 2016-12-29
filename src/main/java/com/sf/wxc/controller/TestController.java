@@ -3,13 +3,8 @@ package com.sf.wxc.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sf.wxc.util.HttpClientUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.Map;
 
 /**
  * Created by Administrator on 2016-12-17.
@@ -34,30 +27,12 @@ public class TestController {
         ObjectMapper objectMapper = new ObjectMapper();
         JSONObject login = new JSONObject(loginJson);
 
-        JSONObject headers = login.getJSONObject("headers");
-        Map<String, Object> headersMap = null;
-        headersMap = objectMapper.readValue(headers.toString(), Map.class);
-
-        CloseableHttpClient client = HttpClientUtil.getHttpClient(login,true);
-        InetSocketAddress socksaddr = new InetSocketAddress("127.0.0.1", 9050);
-        HttpClientContext context = HttpClientContext.create();
-        context.setAttribute("socks.address", socksaddr);
         HttpGet httpGet = new HttpGet(url);
-        if(url.contains("tuicool.com")) {
-            for (Map.Entry<String, Object> param : headersMap.entrySet()) {
-                httpGet.addHeader(param.getKey(), String.valueOf(param.getValue()));
-            }
-        }
         CloseableHttpResponse response = null;
         String result = null;
         try {
-            response =client.execute(httpGet,context);
-            HttpEntity entity = response.getEntity();
-            result = EntityUtils.toString(entity);
-            Header[] headers2 = response.getAllHeaders();
-            for(Header h:headers2)
-            result += (h.getName()+":"+h.getValue());
-        } catch (IOException e) {
+            result =HttpClientUtil.httpGetRequest(url, false,login,true);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
