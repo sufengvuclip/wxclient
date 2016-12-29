@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 
 /**
@@ -64,6 +66,10 @@ public class FeedScheduler {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    StringWriter sw = new StringWriter();
+                    e.printStackTrace(new PrintWriter(sw, true));
+                    String str = sw.toString();
+                    logger.error(str);
                 }
                 try {
                     //pause 2 minutes for each feed.

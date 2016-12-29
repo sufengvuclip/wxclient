@@ -84,7 +84,7 @@ public class HttpClientUtil {
     }
 
     private static CloseableHttpClient getHttpClient(JSONObject loginInfo) {
-        return getHttpClient(loginInfo,false);
+        return getHttpClient(loginInfo,true);
     }
 
     /**
