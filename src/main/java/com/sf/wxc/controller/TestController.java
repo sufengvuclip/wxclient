@@ -31,8 +31,7 @@ public class TestController {
 
         JSONObject login = new JSONObject(loginJson);
         CloseableHttpClient client = HttpClientUtil.getHttpClient(login,true);
-        InetSocketAddress socksaddr = new InetSocketAddress("127.0.0.1",
-                9050);
+        InetSocketAddress socksaddr = new InetSocketAddress("127.0.0.1", 9050);
         HttpClientContext context = HttpClientContext.create();
         context.setAttribute("socks.address", socksaddr);
         HttpGet httpGet = new HttpGet(url);

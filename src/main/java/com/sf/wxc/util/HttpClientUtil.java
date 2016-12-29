@@ -11,6 +11,7 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -39,6 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -144,7 +146,12 @@ public class HttpClientUtil {
 
                 ArrayList<NameValuePair> pairs = covertParams2NVPS(formdataMap);
                 httpPost.setEntity(new UrlEncodedFormEntity(pairs, UTF_8));
-                ret.execute(httpPost);
+
+                InetSocketAddress socksaddr = new InetSocketAddress("127.0.0.1", 9050);
+                HttpClientContext context = HttpClientContext.create();
+                context.setAttribute("socks.address", socksaddr);
+
+                ret.execute(httpPost,context);
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error(e.getMessage());
