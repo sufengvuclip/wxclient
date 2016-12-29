@@ -2,6 +2,7 @@ package com.sf.wxc.controller;
 
 import com.sf.wxc.util.HttpClientUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -41,6 +42,9 @@ public class TestController {
             response =client.execute(httpGet,context);
             HttpEntity entity = response.getEntity();
             result = EntityUtils.toString(entity);
+            Header[] headers = response.getAllHeaders();
+            for(Header h:headers)
+            result += (h.getName()+":"+h.getValue());
         } catch (IOException e) {
             e.printStackTrace();
         }

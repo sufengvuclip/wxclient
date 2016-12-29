@@ -164,11 +164,7 @@ public class HttpClientUtil {
                 ArrayList<NameValuePair> pairs = covertParams2NVPS(formdataMap);
                 httpPost.setEntity(new UrlEncodedFormEntity(pairs, UTF_8));
 
-
-
-                HttpGet httpGet = new HttpGet(loginurl);
-
-                ret.execute(httpGet,context);
+                ret.execute(httpPost,context);
             } catch (Exception e) {
                 //e.printStackTrace();
                 StringWriter sw = new StringWriter();
