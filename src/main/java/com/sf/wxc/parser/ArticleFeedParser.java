@@ -84,9 +84,9 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser{
             doc = HttpClientUtil.httpGetRequest(contentUrl, feed.getContentPageMobile(),feed.getLoginJsonObject(),true);
         else
             doc = HttpClientUtil.httpGetRequest(contentUrl, feed.getContentPageMobile(),feed.getLoginJsonObject(),false);
-        logger.info("=================================================");
+/*        logger.info("=================================================");
         logger.info("url {} content {}",contentUrl,doc);
-        logger.info("=================================================");
+        logger.info("=================================================");*/
         Object obj = parse(doc, feed.getContentJhql());
         LinkedHashMap<String, Object> map = (LinkedHashMap) obj;
         ((FeedArticle) article).setDomain(feed.getDomain());
