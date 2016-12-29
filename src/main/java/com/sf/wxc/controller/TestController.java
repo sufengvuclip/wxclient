@@ -32,7 +32,7 @@ public class TestController {
         JSONObject login = new JSONObject(loginJson);
         CloseableHttpClient client = HttpClientUtil.getHttpClient(login,false);
         InetSocketAddress socksaddr = new InetSocketAddress("127.0.0.1",
-                9500);
+                9050);
         HttpClientContext context = HttpClientContext.create();
         context.setAttribute("socks.address", socksaddr);
         HttpGet httpGet = new HttpGet(url);
@@ -55,7 +55,7 @@ public class TestController {
             "  \"formdata\":{\n" +
             "    \"utf8\":\"✓\",\n" +
             "    \"authenticity_token\":\"5vg/Z5gF6fAL2cgHONRAHjIqI2PG8zxjB5H5AzpwLOk=\",\n" +
-            "    \"email\":\"sufengster@163.com\",\n" +
+            "    \"email\":\"jiqixuexinlp@gmail.com\",\n" +
             "    \"password\":\"meiyoumima\",\n" +
             "    \"remember\":\"1\"\n" +
             "  },\n" +
