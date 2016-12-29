@@ -75,13 +75,17 @@ public class HttpClientUtil {
         return HttpClients.custom().setConnectionManager(cm).build();
     }
 
+    private static CloseableHttpClient getHttpClient(JSONObject loginInfo) {
+        return getHttpClient(loginInfo,false);
+    }
+
     /**
      * get client with login session.
      *
      * @param loginInfo
      * @return
      */
-    private static CloseableHttpClient getHttpClient(JSONObject loginInfo) {
+    public static CloseableHttpClient getHttpClient(JSONObject loginInfo, boolean useSocketProxy) {
         CloseableHttpClient ret = null;
         String loginurl = loginInfo.getString("loginurl");
         ret = loginClientCache.getIfPresent(loginurl);
