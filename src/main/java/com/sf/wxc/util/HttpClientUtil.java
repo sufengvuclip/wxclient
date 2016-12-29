@@ -136,13 +136,18 @@ public class HttpClientUtil {
                 headersMap = objectMapper.readValue(headers.toString(), Map.class);
                 formdataMap = objectMapper.readValue(formdata.toString(), Map.class);
 
+                InetSocketAddress socksaddr = new InetSocketAddress("127.0.0.1", 9050);
+                logger.error("=====new socksaddr {}",socksaddr==null?"null":socksaddr.getHostString());
+                HttpClientContext context = HttpClientContext.create();
+                context.setAttribute("socks.address", socksaddr);
+
                 if(loginurl.contains("tuicool.com")){
                     HttpGet httpGet = new HttpGet(loginurl);
                     for (Map.Entry<String, Object> param : headersMap.entrySet()) {
                         System.out.println(param.getKey()+" | "+param.getValue());
                         httpGet.addHeader(param.getKey(), String.valueOf(param.getValue()));
                     }
-                    CloseableHttpResponse response = ret.execute(httpGet);
+                    CloseableHttpResponse response = ret.execute(httpGet,context);
                     String responseText = EntityUtils.toString(response.getEntity());
                     Document doc = Jsoup.parse(responseText);
                     String token = doc.getElementsByAttributeValue("name","csrf-token").get(0).attr("content");
@@ -159,10 +164,7 @@ public class HttpClientUtil {
                 ArrayList<NameValuePair> pairs = covertParams2NVPS(formdataMap);
                 httpPost.setEntity(new UrlEncodedFormEntity(pairs, UTF_8));
 
-                InetSocketAddress socksaddr = new InetSocketAddress("127.0.0.1", 9050);
-                logger.error("=====new socksaddr {}",socksaddr==null?"null":socksaddr.getHostString());
-                HttpClientContext context = HttpClientContext.create();
-                context.setAttribute("socks.address", socksaddr);
+
 
                 HttpGet httpGet = new HttpGet(loginurl);
 
