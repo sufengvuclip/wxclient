@@ -157,7 +157,9 @@ public class HttpClientUtil {
                 HttpClientContext context = HttpClientContext.create();
                 context.setAttribute("socks.address", socksaddr);
 
-                ret.execute(httpPost,context);
+                HttpGet httpGet = new HttpGet(loginurl);
+
+                ret.execute(httpGet,context);
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error(e.getMessage());
