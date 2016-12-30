@@ -148,7 +148,7 @@ public class HttpClientUtil {
                 if(loginurl.contains("tuicool.com")){
                     HttpGet httpGet = new HttpGet(loginurl);
                     for (Map.Entry<String, Object> param : headersMap.entrySet()) {
-                        System.out.println(param.getKey()+" | "+param.getValue());
+                        logger.info(param.getKey()+" | "+param.getValue());
                         httpGet.addHeader(param.getKey(), String.valueOf(param.getValue()));
                     }
                     CloseableHttpResponse response = null;
@@ -394,9 +394,7 @@ public class HttpClientUtil {
                 // httpClient.close();
                 return result;
             }
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        }  catch (Exception e) {
             e.printStackTrace();
         } finally {
             if(loginInfo==null) {//don't close for login session.
