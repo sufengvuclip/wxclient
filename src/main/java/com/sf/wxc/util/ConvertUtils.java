@@ -14,7 +14,7 @@ public class ConvertUtils {
         if(clazz.equals(String.class))
             return String.valueOf(value);
         if(clazz.equals(Boolean.class) || "Boolean".equals(clazz.getName()))
-            return Boolean.valueOf(NumberUtils.toInt(String.valueOf(value),0)>0);
+            return Boolean.valueOf(String.valueOf(value));
         if(clazz.equals(Integer.class) || "int".equals(clazz.getName()))
             return NumberUtils.toInt(String.valueOf(value),0);
         if(clazz.equals(Long.class) || "long".equals(clazz.getName()))
