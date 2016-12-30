@@ -73,7 +73,7 @@ public class FeedScheduler {
                 }
                 try {
                     //pause 2 minutes for each feed.
-                    Thread.sleep(1000);
+                    Thread.sleep(10*1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
