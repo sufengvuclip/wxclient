@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -31,7 +30,7 @@ public class BigDataWayScheduler {
     @Autowired
     Environment env;
 
-    @Scheduled(fixedDelay = 60 * 60 * 1000)
+    //@Scheduled(fixedDelay = 60 * 60 * 1000)
     public void postNewArticle() {
         List<FeedArticle> articleList = null;
         String lastidFilePath = env.getProperty("drupal.post.last.artile.id.file");
