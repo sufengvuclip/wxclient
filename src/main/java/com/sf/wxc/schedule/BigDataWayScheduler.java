@@ -4,6 +4,7 @@ import com.sf.wxc.beans.FeedArticle;
 import com.sf.wxc.repository.db.feeddb.ArticleDao;
 import com.sf.wxc.repository.db.feeddb.FeedArticleDbRepository;
 import com.sf.wxc.service.BigDataWay;
+import com.sf.wxc.util.SEOUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,11 +54,14 @@ public class BigDataWayScheduler {
                 break;
             }
             logger.info("read last article id {}, start post new articles...",lastId);
+            List<String> articleUrls = null;
             articleList = articleDao.queryArticles(lastId, 100);
             if (articleList != null && articleList.size() > 0) {
+                articleUrls = new ArrayList<>();
                 for (FeedArticle article : articleList) {
                     String nodeId = bigDataWay.postArticle(article);
                     if(nodeId!=null && nodeId.length()>0) {
+                        articleUrls.add("http://www.bigdataway.net/node/"+nodeId);
                         try {
                             FileUtils.writeStringToFile(lastidFile, String.valueOf(article.getId()), "utf-8");
                         } catch (Exception e) {
@@ -72,6 +77,11 @@ public class BigDataWayScheduler {
                     }
                     logger.info("added new article {}, node id {}", article.getId(), nodeId);
                 }
+            }
+            //post to baidu.
+            if(articleUrls!=null && articleUrls.size()>0){
+                boolean post = SEOUtil.postToBaidu(articleUrls);
+                logger.info("post to baidu {}, url number {}", post, articleUrls.size());
             }
         }while(articleList!=null && articleList.size()>0);
 
