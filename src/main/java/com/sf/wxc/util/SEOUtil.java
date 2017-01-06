@@ -1,7 +1,6 @@
 package com.sf.wxc.util;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,10 +26,10 @@ public class SEOUtil {
         return ret;
     }
 
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         List<String> urls = new ArrayList<>();
         urls.add("http://www.bigdataway.net/node/1185");
         urls.add("http://www.bigdataway.net/node/1186");
         boolean ret = postToBaidu(urls);
-    }
+    }*/
 }
