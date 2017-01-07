@@ -84,7 +84,7 @@ public class HttpClientUtil {
     }
 
     private static CloseableHttpClient getHttpClient(JSONObject loginInfo) {
-        return getHttpClient(loginInfo,true);
+        return getHttpClient(loginInfo, true);
     }
 
     /**
@@ -107,29 +107,34 @@ public class HttpClientUtil {
                     }
                 });*/
 
+                RequestConfig requestConfig = null;
                 Registry<ConnectionSocketFactory> socketFactoryRegistry = null;
                 PoolingHttpClientConnectionManager connectionManager = null;
-                if(useSocketProxy){
+                if (useSocketProxy) {
                     socketFactoryRegistry = RegistryBuilder
                             .<ConnectionSocketFactory>create()
                             .register("http", new MyPlainConnectionSocketFactory())
                             .register("https", new MyConnectionSocketFactory(SSLContexts.createSystemDefault()))
                             .build();
                     connectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry, new FakeDnsResolver());
-                }else {
+                    requestConfig = RequestConfig.custom().setConnectTimeout(10*60*1000).setSocketTimeout(10*60*1000)
+                            .setConnectionRequestTimeout(10*60*1000).build();
+                } else {
                     final SSLContext sslcontext = SSLContexts.createSystemDefault();
                     final X509HostnameVerifier hostnameVerifier = new BrowserCompatHostnameVerifier();
                     socketFactoryRegistry = RegistryBuilder
                             .<ConnectionSocketFactory>create()
-                        .register ( "http", PlainConnectionSocketFactory.INSTANCE )
-                        .register ( "https", new SSLConnectionSocketFactory( sslcontext, hostnameVerifier ) )
+                            .register("http", PlainConnectionSocketFactory.INSTANCE)
+                            .register("https", new SSLConnectionSocketFactory(sslcontext, hostnameVerifier))
                             .build();
-                    connectionManager = new PoolingHttpClientConnectionManager (socketFactoryRegistry );
+                    connectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+                    requestConfig = RequestConfig.custom().setConnectTimeout(120000).setSocketTimeout(60000)
+                            .setConnectionRequestTimeout(60000).build();
                 }
                 CookieStore cookieStore = new BasicCookieStore();
                 // 配置超时时间（连接服务端超时1秒，请求数据返回超时2秒）
-                RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(120000).setSocketTimeout(60000)
-                        .setConnectionRequestTimeout(60000).build();
+                /*RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(120000).setSocketTimeout(60000)
+                        .setConnectionRequestTimeout(60000).build();*/
                 // 设置默认跳转以及存储cookie
                 /*ret = HttpClientBuilder.create().setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
                         .setRedirectStrategy(new DefaultRedirectStrategy()).setDefaultRequestConfig(requestConfig)
@@ -148,21 +153,21 @@ public class HttpClientUtil {
                 headersMap = objectMapper.readValue(headers.toString(), Map.class);
                 formdataMap = objectMapper.readValue(formdata.toString(), Map.class);
 
-                if(loginurl.contains("tuicool.com")){
+                if (loginurl.contains("tuicool.com")) {
                     HttpGet httpGet = new HttpGet(loginurl);
                     for (Map.Entry<String, Object> param : headersMap.entrySet()) {
-                        logger.info(param.getKey()+" | "+param.getValue());
+                        logger.info(param.getKey() + " | " + param.getValue());
                         httpGet.addHeader(param.getKey(), String.valueOf(param.getValue()));
                     }
                     CloseableHttpResponse response = null;
-                    if(useSocketProxy)
-                        response = ret.execute(httpGet,getTorProxyContext());
+                    if (useSocketProxy)
+                        response = ret.execute(httpGet, getTorProxyContext());
                     else
                         response = ret.execute(httpGet);
                     String responseText = EntityUtils.toString(response.getEntity());
                     Document doc = Jsoup.parse(responseText);
-                    String token = doc.getElementsByAttributeValue("name","csrf-token").get(0).attr("content");
-                    formdata.put("authenticity_token",token);
+                    String token = doc.getElementsByAttributeValue("name", "csrf-token").get(0).attr("content");
+                    formdata.put("authenticity_token", token);
                 }
 
 
@@ -174,8 +179,8 @@ public class HttpClientUtil {
 
                 ArrayList<NameValuePair> pairs = covertParams2NVPS(formdataMap);
                 httpPost.setEntity(new UrlEncodedFormEntity(pairs, UTF_8));
-                if(useSocketProxy)
-                    ret.execute(httpPost,getTorProxyContext());
+                if (useSocketProxy)
+                    ret.execute(httpPost, getTorProxyContext());
                 else
                     ret.execute(httpPost);
             } catch (Exception e) {
@@ -187,11 +192,11 @@ public class HttpClientUtil {
                 ret = null;
             }
         }
-        if(ret!=null) loginClientCache.put(loginurl,ret);
+        if (ret != null) loginClientCache.put(loginurl, ret);
         return ret;
     }
 
-    static HttpClientContext getTorProxyContext(){
+    static HttpClientContext getTorProxyContext() {
         InetSocketAddress socksaddr = new InetSocketAddress("127.0.0.1", 9050);
         HttpClientContext context = HttpClientContext.create();
         context.setAttribute("socks.address", socksaddr);
@@ -202,13 +207,13 @@ public class HttpClientUtil {
         @Override
         public InetAddress[] resolve(String host) throws UnknownHostException {
             // Return some fake DNS record for every request, we won't be using it
-            return new InetAddress[] { InetAddress.getByAddress(new byte[] { 1, 1, 1, 1 }) };
+            return new InetAddress[]{InetAddress.getByAddress(new byte[]{1, 1, 1, 1})};
         }
     }
 
 
     public static String httpGetRequest(String url) {
-        return httpGetRequest(url, true, null,false);
+        return httpGetRequest(url, true, null, false);
     }
 
     /**
@@ -217,11 +222,11 @@ public class HttpClientUtil {
      */
     public static String httpGetRequest(String url, boolean mobileUA, JSONObject loginInfo, boolean useSocketProxy) {
         HttpGet httpGet = new HttpGet(url);
-        return getResult(httpGet, mobileUA, loginInfo,useSocketProxy);
+        return getResult(httpGet, mobileUA, loginInfo, useSocketProxy);
     }
 
     public static String httpGetRequest(String url, Map<String, Object> params) throws URISyntaxException {
-        return httpGetRequest(url, params, true, null,false);
+        return httpGetRequest(url, params, true, null, false);
     }
 
     public static String httpGetRequest(String url, Map<String, Object> params, boolean mobileUA, JSONObject loginInfo, boolean useSocketProxy) throws URISyntaxException {
@@ -232,13 +237,13 @@ public class HttpClientUtil {
         ub.setParameters(pairs);
 
         HttpGet httpGet = new HttpGet(ub.build());
-        return getResult(httpGet, mobileUA, loginInfo,useSocketProxy);
+        return getResult(httpGet, mobileUA, loginInfo, useSocketProxy);
     }
 
 
     public static String httpGetRequest(String url, Map<String, Object> headers, Map<String, Object> params)
             throws URISyntaxException {
-        return httpGetRequest(url, headers, params, true, null,false);
+        return httpGetRequest(url, headers, params, true, null, false);
     }
 
     public static String httpGetRequest(String url, Map<String, Object> headers, Map<String, Object> params, boolean mobileUA, JSONObject loginInfo, boolean useSocketProxy)
@@ -253,16 +258,16 @@ public class HttpClientUtil {
         for (Map.Entry<String, Object> param : headers.entrySet()) {
             httpGet.addHeader(param.getKey(), String.valueOf(param.getValue()));
         }
-        return getResult(httpGet, mobileUA, loginInfo,useSocketProxy);
+        return getResult(httpGet, mobileUA, loginInfo, useSocketProxy);
     }
 
     public static String httpPostRequest(String url) {
-        return httpPostRequest(url, true, null,false);
+        return httpPostRequest(url, true, null, false);
     }
 
     public static String httpPostRequest(String url, boolean mobileUA, JSONObject loginInfo, boolean useSocketProxy) {
         HttpPost httpPost = new HttpPost(url);
-        return getResult(httpPost, mobileUA, loginInfo,useSocketProxy);
+        return getResult(httpPost, mobileUA, loginInfo, useSocketProxy);
     }
 
     public static String uploadFile(String url, String filepath, Map<String, String> params) {
@@ -308,18 +313,18 @@ public class HttpClientUtil {
     }
 
     public static String httpPostRequest(String url, Map<String, Object> params) throws UnsupportedEncodingException {
-        return httpPostRequest(url, params, true, null,false);
+        return httpPostRequest(url, params, true, null, false);
     }
 
     public static String httpPostRequest(String url, Map<String, Object> params, boolean mobileUA, JSONObject loginInfo, boolean useSocketProxy) throws UnsupportedEncodingException {
         HttpPost httpPost = new HttpPost(url);
         ArrayList<NameValuePair> pairs = covertParams2NVPS(params);
         httpPost.setEntity(new UrlEncodedFormEntity(pairs, UTF_8));
-        return getResult(httpPost, mobileUA, loginInfo,useSocketProxy);
+        return getResult(httpPost, mobileUA, loginInfo, useSocketProxy);
     }
 
     public static String httpPostRequest(String url, String body) throws UnsupportedEncodingException {
-        return httpPostRequest(url, body, null, true, null,false);
+        return httpPostRequest(url, body, null, true, null, false);
     }
 
     public static String httpPostRequest(String url, String body, Map<String, Object> headers, boolean mobileUA, JSONObject loginInfo, boolean useSocketProxy) throws UnsupportedEncodingException {
@@ -334,7 +339,7 @@ public class HttpClientUtil {
     }
 
     public static String httpPostRequest(String url, Map<String, Object> headers, Map<String, Object> params) throws UnsupportedEncodingException {
-        return httpPostRequest(url, headers, params, true, null,false);
+        return httpPostRequest(url, headers, params, true, null, false);
     }
 
     public static String httpPostRequest(String url, Map<String, Object> headers, Map<String, Object> params, boolean mobileUA, JSONObject loginInfo, boolean useSocketProxy)
@@ -347,7 +352,7 @@ public class HttpClientUtil {
 
         ArrayList<NameValuePair> pairs = covertParams2NVPS(params);
         httpPost.setEntity(new UrlEncodedFormEntity(pairs, UTF_8));
-        return getResult(httpPost, mobileUA, loginInfo,useSocketProxy);
+        return getResult(httpPost, mobileUA, loginInfo, useSocketProxy);
     }
 
 
@@ -382,8 +387,8 @@ public class HttpClientUtil {
 //        CloseableHttpClient httpClient = getHttpClient();
         try {
             CloseableHttpResponse response = null;
-            if(useSocketProxy)
-                response = httpClient.execute(request,getTorProxyContext());
+            if (useSocketProxy)
+                response = httpClient.execute(request, getTorProxyContext());
             else
                 response = httpClient.execute(request);
 
@@ -397,10 +402,10 @@ public class HttpClientUtil {
                 // httpClient.close();
                 return result;
             }
-        }  catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(loginInfo==null) {//don't close for login session.
+            if (loginInfo == null) {//don't close for login session.
                 try {
                     httpClient.close();
                 } catch (IOException e) {
