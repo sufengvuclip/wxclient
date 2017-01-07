@@ -136,7 +136,10 @@ public class HttpClientUtil {
                         .setConnectionManager(connectionManager)
                         .setConnectionManagerShared(true)
                         .setDefaultCookieStore(cookieStore).build();*/
-                ret = HttpClients.custom().setConnectionManager(connectionManager).build();
+                ret = HttpClients.custom()
+                        .setConnectionManager(connectionManager)
+                        .setDefaultRequestConfig(requestConfig)
+                        .build();
                 JSONObject formdata = loginInfo.getJSONObject("formdata");
                 JSONObject headers = loginInfo.getJSONObject("headers");
 
