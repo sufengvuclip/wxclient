@@ -116,7 +116,7 @@ public class WxclientApplicationTests {
 				"    \"User-Agent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36\"\n" +
 				"  }\n" +
 				"}";
-		Feed feed = new Feed(0,"test","http://www.tuicool.com/search?kw=万亿user_tags级实时推荐系统数据库设计",
+		Feed feed = new Feed(0,"test","http://www.tuicool.com/search?kw=万亿user_tags级实时推荐系统数据库设计&t=1",
 				"tuicool.com",listHql,contentHql,"com.sf.wxc.parser.ArticleFeedParser","com.sf.wxc.beans.FeedArticle",false,"http://www.tuicool.com",false,false,1,"machinelearning","news_machinelearning",loginJson,true,true);
 		Class clazz = Class.forName(feed.getParserClass());
 		BaseParser parser = (BaseParser) clazz.newInstance();
