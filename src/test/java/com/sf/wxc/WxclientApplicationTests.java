@@ -117,7 +117,24 @@ public class WxclientApplicationTests {
 				"  }\n" +
 				"}";
 		Feed feed = new Feed(0,"test","http://www.tuicool.com/search?kw=万亿user_tags级实时推荐系统数据库设计&t=1",
-				"tuicool.com",listHql,contentHql,"com.sf.wxc.parser.ArticleFeedParser","com.sf.wxc.beans.FeedArticle",false,"http://www.tuicool.com",false,false,1,"machinelearning","news_machinelearning",loginJson,true,true);
+				"tuicool.com",listHql,contentHql,"com.sf.wxc.parser.ArticleFeedParser","com.sf.wxc.beans.FeedArticle",false,"http://www.tuicool.com",false,false,1,"machinelearning","news_machinelearning",loginJson,true,true, true , false);
+		Class clazz = Class.forName(feed.getParserClass());
+		BaseParser parser = (BaseParser) clazz.newInstance();
+		List<?> list = parser.parseListPage(feed);
+		for(Object o: list){
+			System.out.println(o.toString());
+		}
+	}
+
+	@Test
+	public void testToutiaoFeeds() throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException {
+
+		String listHql = "{\"articles\":{\"_type\":\"list\",\"from\":\".//div[@class='list_content']/section\",\"select\":{\"title\":\"text:.//h3\",\"url\":\"text:./a[1]/@href\"}}}";
+
+		String contentHql = "{\"content\":\"html:.//div[@class='article-content']\",\"author\":\"text:.//div[@class='articleInfo']/span[@class='src']\",\"tags\":\"text:.//a[@class='label-link']\"}";
+		String loginJson = null;
+		Feed feed = new Feed(0,"test","http://m.toutiao.com/search/?keyword=tensorflow&count=20",
+				"toutiao.com",listHql,contentHql,"com.sf.wxc.parser.ArticleFeedParser","com.sf.wxc.beans.FeedArticle",true,"http://www.toutiao.com",true,false,1,"machinelearning","news_machinelearning",loginJson,true,true, true, false);
 		Class clazz = Class.forName(feed.getParserClass());
 		BaseParser parser = (BaseParser) clazz.newInstance();
 		List<?> list = parser.parseListPage(feed);

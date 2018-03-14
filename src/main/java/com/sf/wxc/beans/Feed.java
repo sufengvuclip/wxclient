@@ -38,6 +38,8 @@ public class Feed {
     private String loginJson;
     private Boolean imgProxy;
     private Boolean active;
+    private Boolean contentPageAjax;
+    private Boolean listPageAjax;
 
     public Feed() {
     }

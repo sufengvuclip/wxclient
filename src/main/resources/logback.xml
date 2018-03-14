@@ -9,11 +9,19 @@
     <logger name="org.apache.sshd.common.util.SecurityUtils" level="WARN"/>
     <logger name="org.apache.tomcat.util.net.NioSelectorPool" level="WARN"/>
     <appender name="dailyRollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>/program/wxc/log/wxclient.log</File>
+        <springProfile name="prod, staging">
+            <File>/program/wxc/log/wxclient.log</File>
+        </springProfile>
+        <springProfile name="dev">
+            <File>/Users/sufeng/dev/wxc/logs/wxclient.log</File>
+        </springProfile>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- daily rollover -->
-            <FileNamePattern>/program/wxc/log/wxclient.log.%d{yyyy-MM-dd}</FileNamePattern>
-            <!-- keep 30 days' worth of history -->
+            <springProfile name="prod, staging">
+                <FileNamePattern>/program/wxc/log/wxclient.log.%d{yyyy-MM-dd}</FileNamePattern>
+            </springProfile>
+            <springProfile name="dev">
+                <FileNamePattern>/Users/sufeng/dev/wxc/logs/wxclient.log.%d{yyyy-MM-dd}</FileNamePattern>
+            </springProfile>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -23,6 +31,6 @@
         <prudent>true</prudent>
     </appender>
     <root level="INFO">
-        <appender-ref ref="dailyRollingFileAppender" />
+        <appender-ref ref="dailyRollingFileAppender"/>
     </root>
 </configuration>

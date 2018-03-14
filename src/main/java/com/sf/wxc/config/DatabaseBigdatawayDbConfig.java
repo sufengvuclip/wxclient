@@ -18,10 +18,8 @@ import java.util.HashMap;
 
 @Configuration
 @PropertySource(value="classpath:application.properties", ignoreResourceNotFound=true)
-@PropertySource(value="file:/E:\\workspace\\sufeng\\persistence-multiple-db.properties", ignoreResourceNotFound=true)
-@PropertySource(value="file:/D:\\ideaworkspace\\github\\persistence-multiple-db.properties", ignoreResourceNotFound=true)
-@PropertySource(value="file:/program/wxc/conf/persistence-multiple-db.properties", ignoreResourceNotFound=true)
-//@PropertySource({"classpath:application.properties","file:/D:\\ideaworkspace\\github\\persistence-multiple-db.properties","file:/program/wxc/conf/persistence-multiple-db.properties"})
+@PropertySource(value="file:/Users/sufeng/dev/wxc/conf/persistence-multiple-db_prod.properties", ignoreResourceNotFound=true)
+@PropertySource(value="file:/program/wxc/conf/persistence-multiple-db_prod.properties", ignoreResourceNotFound=true)
 @EnableJpaRepositories(
         basePackages = "com.sf.wxc.repository.db.bigdatawaydb",
         entityManagerFactoryRef = "bigdatawayDbEntityManager",

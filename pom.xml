@@ -51,12 +51,17 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.1</version>
+            <version>4.5.2</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.16.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -111,15 +116,22 @@
             <artifactId>json</artifactId>
             <version>20160212</version>
         </dependency>
-
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server-standalone</artifactId>
             <version>2.53.0</version>
             <scope>system</scope>
-            <!--本地jar的路径,相对或者绝对都可以-->
-            <systemPath>${project.basedir}/lib/selenium-server-standalone-3.0.1.jar</systemPath>
+            <systemPath>${project.basedir}/lib/selenium-server-standalone-3.7.1.jar</systemPath>
         </dependency>
+
+<!--        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-server-standalone</artifactId>
+            <version>2.53.0</version>
+            <scope>system</scope>
+            &lt;!&ndash;本地jar的路径,相对或者绝对都可以&ndash;&gt;
+            <systemPath>${project.basedir}/lib/selenium-server-standalone-3.0.1.jar</systemPath>
+        </dependency>-->
         <!--for jhql-->
         <dependency>
             <groupId>jaxen</groupId>
@@ -175,6 +187,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <!--for jhql-->
 
     </dependencies>
@@ -184,6 +201,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <profiles>
+                        <profile>dev</profile>
+                        <profile>staging</profile>
+                        <profile>prod</profile>
+                    </profiles>
+                </configuration>
             </plugin>
         </plugins>
     </build>

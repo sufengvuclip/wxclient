@@ -17,6 +17,8 @@ CREATE TABLE `feed` (
   `tags` varchar(256) DEFAULT NULL,
   `category` varchar(256) DEFAULT NULL,
   `loginJson` varchar(1024) DEFAULT NULL,
+  `contentPageAjax` BOOLEAN,
+  `listPageAjax` BOOLEAN,
   PRIMARY KEY (`id`),
   UNIQUE KEY `feed_field__url__value` (`url`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='The base table for feed entities.'
