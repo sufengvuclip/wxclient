@@ -24,8 +24,8 @@ public class SeleniumUtil {
         return ret;
     }
 
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         String content = getRequest("https://www.toutiao.com/a6431773483667898626/");
         System.out.println(content);
-    }
+    }*/
 }
