@@ -12,8 +12,8 @@ public class SeleniumUtil {
     static{
         //System.setProperty("phantomjs.binary.path","D:\\TDDOWNLOAD\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
         //driver = new org.openqa.selenium.phantomjs.PhantomJSDriver();
-        driver = new HtmlUnitDriver(BrowserVersion.FIREFOX_52);
-        driver.setJavascriptEnabled(true);
+        driver = new HtmlUnitDriver(true);
+        //driver.setJavascriptEnabled(true);
 
     }
     public static String getRequest(String link){
@@ -24,8 +24,8 @@ public class SeleniumUtil {
         return ret;
     }
 
-/*    public static void main(String[] args) {
+    public static void main(String[] args) {
         String content = getRequest("https://www.toutiao.com/a6431773483667898626/");
         System.out.println(content);
-    }*/
+    }
 }
