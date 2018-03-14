@@ -12,7 +12,7 @@ public class SeleniumUtil {
     static{
         //System.setProperty("phantomjs.binary.path","D:\\TDDOWNLOAD\\phantomjs-2.1.1-windows\\bin\\phantomjs.exe");
         //driver = new org.openqa.selenium.phantomjs.PhantomJSDriver();
-        driver = new HtmlUnitDriver(true);
+        driver = new HtmlUnitDriver( BrowserVersion.FIREFOX_45,true);
         //driver.setJavascriptEnabled(true);
 
     }
