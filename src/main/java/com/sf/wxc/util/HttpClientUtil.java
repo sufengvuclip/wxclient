@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
+import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
@@ -106,7 +107,6 @@ public class HttpClientUtil {
                         return p;
                     }
                 });*/
-
                 RequestConfig requestConfig = null;
                 Registry<ConnectionSocketFactory> socketFactoryRegistry = null;
                 PoolingHttpClientConnectionManager connectionManager = null;
@@ -118,7 +118,7 @@ public class HttpClientUtil {
                             .build();
                     connectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry, new FakeDnsResolver());
                     requestConfig = RequestConfig.custom().setConnectTimeout(10*60*1000).setSocketTimeout(10*60*1000)
-                            .setConnectionRequestTimeout(10*60*1000).build();
+                            .setConnectionRequestTimeout(10*60*1000).setCookieSpec(CookieSpecs.STANDARD).build();
                 } else {
                     final SSLContext sslcontext = SSLContexts.createSystemDefault();
                     final X509HostnameVerifier hostnameVerifier = new BrowserCompatHostnameVerifier();
@@ -129,7 +129,7 @@ public class HttpClientUtil {
                             .build();
                     connectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
                     requestConfig = RequestConfig.custom().setConnectTimeout(120000).setSocketTimeout(60000)
-                            .setConnectionRequestTimeout(60000).build();
+                            .setConnectionRequestTimeout(60000).setCookieSpec(CookieSpecs.STANDARD).build();
                 }
                 CookieStore cookieStore = new BasicCookieStore();
                 // 配置超时时间（连接服务端超时1秒，请求数据返回超时2秒）
@@ -151,7 +151,6 @@ public class HttpClientUtil {
                 Map<String, Object> headersMap = null;
                 Map<String, Object> formdataMap = null;
                 headersMap = objectMapper.readValue(headers.toString(), Map.class);
-                formdataMap = objectMapper.readValue(formdata.toString(), Map.class);
 
                 if (loginurl.contains("tuicool.com")) {
                     HttpGet httpGet = new HttpGet(loginurl);
@@ -168,6 +167,7 @@ public class HttpClientUtil {
                     Document doc = Jsoup.parse(responseText);
                     String token = doc.getElementsByAttributeValue("name", "csrf-token").get(0).attr("content");
                     formdata.put("authenticity_token", token);
+                    formdataMap = objectMapper.readValue(formdata.toString(), Map.class);
                 }
 
 
@@ -184,7 +184,6 @@ public class HttpClientUtil {
                 else
                     ret.execute(httpPost);
             } catch (Exception e) {
-                //e.printStackTrace();
                 StringWriter sw = new StringWriter();
                 e.printStackTrace(new PrintWriter(sw, true));
                 String str = sw.toString();
@@ -379,7 +378,7 @@ public class HttpClientUtil {
 
         CloseableHttpClient httpClient = null;
         if (loginInfo != null) {
-            httpClient = getHttpClient(loginInfo);//only get the client with login session.
+            httpClient = getHttpClient(loginInfo, false);//only get the client with login session.
         } else {
             httpClient = HttpClients.createDefault();
         }

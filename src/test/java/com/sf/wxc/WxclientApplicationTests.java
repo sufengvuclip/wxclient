@@ -4,6 +4,7 @@ import com.sf.wxc.beans.Article;
 import com.sf.wxc.beans.Feed;
 import com.sf.wxc.beans.WXApp;
 import com.sf.wxc.parser.BaseParser;
+import com.sf.wxc.repository.db.feeddb.FeedArticleDbRepository;
 import com.sf.wxc.service.TT;
 import com.sf.wxc.service.WX;
 import com.sf.wxc.service.WXAppService;
@@ -11,12 +12,16 @@ import com.sf.wxc.util.WXUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.anyString;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -33,6 +38,9 @@ public class WxclientApplicationTests {
 
 	@Resource
 	WXAppService wxAppService;
+
+	@MockBean
+	FeedArticleDbRepository feedArticleDbRepository;
 
 	//@Test
 	public void contextLoads() {
@@ -60,6 +68,7 @@ public class WxclientApplicationTests {
 	}
 	@Test
 	public void testFeeds() throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException {
+		given(feedArticleDbRepository.existsUrl(anyString())).willReturn(false);
 /*		String listHql = "{\n" +
 				"    \"articles\": {\n" +
 				"        \"_type\": \"list\",\n" +
@@ -79,10 +88,10 @@ public class WxclientApplicationTests {
 		String listHql = "{\n" +
 				"    \"articles\": {\n" +
 				"      \"_type\": \"list\",\n" +
-				"      \"from\": \".//div[@class='list_article']/div[@class='single_fake']\",\n" +
+				"      \"from\": \".//div[@class='aricle_item_info']/div[@class='title']\",\n" +
 				"      \"select\": {\n" +
-				"        \"title\": \"text:.//a[@class='article-list-title']\",\n" +
-				"        \"url\": \"text:.//a[@class='article-list-title']/@href\"\n" +
+				"        \"title\": \"text:.//a[@target='_blank']\",\n" +
+				"        \"url\": \"text:.//a[@target='_blank']/@href\"\n" +
 				"      }\n" +
 				"    }\n" +
 				"  }";
@@ -94,10 +103,10 @@ public class WxclientApplicationTests {
 
         String contentHql = "{\"content\":\"html:.//div[@class='article_body']\",\"author\":\"text:.//span[@class='from']/a[1]\",\"originalUrl\":\"text:.//div[@class='source']/a[1]\",\"tags\":\"text:.//div[@class='article_meta']//span[@class='new-label']\"}";
 		String loginJson = "{\n" +
-				"  \"loginurl\": \"http://www.tuicool.com/login\",\n" +
+				"  \"loginurl\": \"https://www.tuicool.com/login\",\n" +
 				"  \"formdata\":{\n" +
 				"    \"utf8\":\"✓\",\n" +
-				"    \"authenticity_token\":\"5vg/Z5gF6fAL2cgHONRAHjIqI2PG8zxjB5H5AzpwLOk=\",\n" +
+				"    \"authenticity_token\":\"UhnqxBZZNVRDCz0jzOWTSNeazqevsIqrsZJOenY4aS4cESoR4NrqJR4PTTgWUvWBg9xldoZpAKDuW+3pxBgjLA==\",\n" +
 				"    \"email\":\"sufengster@163.com\",\n" +
 				"    \"password\":\"meiyoumima\",\n" +
 				"    \"remember\":\"1\"\n" +
@@ -110,14 +119,14 @@ public class WxclientApplicationTests {
 				"    \"Connection\":\"keep-alive\",\n" +
 				"    \"Content-Type\":\"application/x-www-form-urlencoded\",\n" +
 				"    \"Host\":\"www.tuicool.com\",\n" +
-				"    \"Origin\":\"http://www.tuicool.com\",\n" +
-				"    \"Referer\":\"http://www.tuicool.com/login\",\n" +
+				"    \"Origin\":\"https://www.tuicool.com\",\n" +
+				"    \"Referer\":\"https://www.tuicool.com/login\",\n" +
 				"    \"Upgrade-Insecure-Requests\":\"1\",\n" +
 				"    \"User-Agent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36\"\n" +
 				"  }\n" +
 				"}";
-		Feed feed = new Feed(0,"test","http://www.tuicool.com/search?kw=万亿user_tags级实时推荐系统数据库设计&t=1",
-				"tuicool.com",listHql,contentHql,"com.sf.wxc.parser.ArticleFeedParser","com.sf.wxc.beans.FeedArticle",false,"http://www.tuicool.com",false,false,1,"machinelearning","news_machinelearning",loginJson,true,true, true , false);
+		Feed feed = new Feed(0,"test","https://www.tuicool.com/search?kw=万亿user_tags级实时推荐系统数据库设计&t=1",
+				"tuicool.com",listHql,contentHql,"com.sf.wxc.parser.ArticleFeedParser","com.sf.wxc.beans.FeedArticle",false,"https://www.tuicool.com",false,false,1,"machinelearning","news_machinelearning",loginJson,true,true, false , false);
 		Class clazz = Class.forName(feed.getParserClass());
 		BaseParser parser = (BaseParser) clazz.newInstance();
 		List<?> list = parser.parseListPage(feed);
