@@ -118,3 +118,8 @@ select * from article where title='推荐系统之眼';
 select * from article order by id desc limit 10;
 
 
+UPDATE FEED set loginJson='{"loginurl":"https://www.tuicool.com/login","formdata":{"utf8":"✓","authenticity_token":"5vg/Z5gF6fAL2cgHONRAHjIqI2PG8zxjB5H5AzpwLOk=","email":"jiqixuexinlp@gmail.com","password":"meiyoumima","remember":"1"},"headers":{"Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8","Accept-Encoding":"gzip, deflate","Accept-Language":"zh-CN,zh;q=0.8,en;q=0.6","Cache-Control":"max-age=0","Connection":"keep-alive","Content-Type":"application/x-www-form-urlencoded","Host":"www.tuicool.com","Origin":"https://www.tuicool.com","Referer":"https://www.tuicool.com/login","Upgrade-Insecure-Requests":"1","User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36"}}' WHERE "domain"='tuicool.com';
+
+UPDATE feed set listJhql='{"articles":{"_type":"list","from":".//div[@class=''aricle_item_info'']/div[@class=''title'']","select":{"title":"text:.//a[@target=''_blank'']","url":"text:.//a[@target=''_blank'']/@href"}}}' WHERE  domain='tuicool.com';
+
+UPDATE feed set contentPagePreUrl='https://www.tuicool.com' where domain='tuicool.com';
