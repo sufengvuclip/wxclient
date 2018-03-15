@@ -137,7 +137,7 @@ public class WxclientApplicationTests {
 
 	@Test
 	public void testToutiaoFeeds() throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException {
-
+		given(feedArticleDbRepository.existsUrl(anyString())).willReturn(false);
 		String listHql = "{\"articles\":{\"_type\":\"list\",\"from\":\".//div[@class='list_content']/section\",\"select\":{\"title\":\"text:.//h3\",\"url\":\"text:./a[1]/@href\"}}}";
 
 		String contentHql = "{\"content\":\"html:.//div[@class='article-content']\",\"author\":\"text:.//div[@class='articleInfo']/span[@class='src']\",\"tags\":\"text:.//a[@class='label-link']\"}";

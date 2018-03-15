@@ -98,7 +98,7 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser {
         ((FeedArticle) article).setDomain(feed.getDomain());
         ((FeedArticle) article).setFeedId(feed.getId());
         ((FeedArticle) article).setCategory(feed.getCategory());
-        ((FeedArticle) article).setContent(map.get("content") == null ? null : map.get("content").toString());
+        ((FeedArticle) article).setContent(map.get("content") == null ? null : htmlClean(map.get("content").toString()));
         ((FeedArticle) article).setAuthor(map.get("author") == null ? null : map.get("author").toString());
         ((FeedArticle) article).setTags(map.get("tags") == null ? null : map.get("tags").toString());
         ((FeedArticle) article).setOriginalUrl(map.get("originalUrl") == null ? null : map.get("originalUrl").toString());
@@ -141,5 +141,12 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser {
         String text = doc.body().text();
         int index = Math.min(length, text.length());
         return text.substring(0, index);
+    }
+
+    private static String htmlClean(String source) {
+        if (source == null) {
+            return null;
+        }
+        return source.replaceAll("&#13;", "");
     }
 }

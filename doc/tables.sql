@@ -123,3 +123,5 @@ UPDATE FEED set loginJson='{"loginurl":"https://www.tuicool.com/login","formdata
 UPDATE feed set listJhql='{"articles":{"_type":"list","from":".//div[@class=''aricle_item_info'']/div[@class=''title'']","select":{"title":"text:.//a[@target=''_blank'']","url":"text:.//a[@target=''_blank'']/@href"}}}' WHERE  domain='tuicool.com';
 
 UPDATE feed set contentPagePreUrl='https://www.tuicool.com' where domain='tuicool.com';
+
+UPDATE feed set contentJhql='{"content":"html:.//div[@class=''article-content'']","author":"text:.//div[@class=''article-sub'']/span[0]","tags":"text:.//a[@class=''label-link'']"}' where domain='toutiao.com';
