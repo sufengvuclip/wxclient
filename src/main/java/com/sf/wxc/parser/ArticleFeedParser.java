@@ -77,10 +77,10 @@ public class ArticleFeedParser extends JHQLParser implements BaseParser {
     @Override
     public FeedArticle parseContentPage(Feed feed, Object article) {
         String contentUrl = ((FeedArticle) article).getUrl();
-        System.out.println("contentUrl1 :" + contentUrl);
+        logger.info("contentUrl1 :" + contentUrl);
         if (feed.getContentPageRedirect()) {
             contentUrl = HttpClientUtil.httpGetRedirectFinalUrl(contentUrl, feed.getContentPageMobile(), feed.getLoginJsonObject());
-            System.out.println("contentUrl2 :" + contentUrl);
+            logger.info("contentUrl2 :" + contentUrl);
         }
 
         String doc = null;
